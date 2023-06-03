@@ -38,4 +38,13 @@ class AccountService(
         val roles = setOf(commonRole)
         return create(createRequest, roles)
     }
+
+    fun createSuper(createRequest: CreateAccountRequest): AccountEntity {
+        val superRole = roleService.findByName(UserRole.SUPER)
+        val commonRole = roleService.findByName(UserRole.COMMON)
+        val roles = setOf(commonRole, superRole)
+        return superRole.accounts
+            .find { it.email == createRequest.email }
+            ?: create(createRequest, roles)
+    }
 }
