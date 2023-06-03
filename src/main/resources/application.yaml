@@ -2,6 +2,10 @@ security:
     key: eShVmYq3t6w9z$C&F)H@McQfTjWnZr4u
     accessTokenMaxAge: 1200                 # 20 minutes in seconds
     refreshTokenMaxAge: 604800              # 7 days in seconds
+superuser:
+    name: admin
+    email: superuser@example.com
+    password: password
 ---
 spring:
     config:
