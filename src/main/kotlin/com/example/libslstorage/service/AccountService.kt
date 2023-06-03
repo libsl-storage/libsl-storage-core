@@ -47,4 +47,22 @@ class AccountService(
             .find { it.email == createRequest.email }
             ?: create(createRequest, roles)
     }
+
+    fun update(
+        account: AccountEntity,
+        updateRequest: UpdateAccountRequest
+    ): AccountEntity {
+        val email = updateRequest.email
+        if (account.email != email) checkEmailAvailable(email)
+        account.email = updateRequest.email
+        account.name = updateRequest.name
+        return accountRepository.save(account)
+    }
+
+    fun updatePassword(account: AccountEntity, updateRequest: UpdateAccountPasswordRequest) {
+        val encodedOldPassword = passwordEncoder.encode(updateRequest.oldPassword)
+        if (encodedOldPassword != account.password) throw OldPasswordNotMatchException()
+        val encodedNewPassword = passwordEncoder.encode(updateRequest.newPassword)
+        account.password = encodedNewPassword
+    }
 }
