@@ -1,0 +1,33 @@
+spring:
+    config:
+        activate:
+            on-profile: dev
+    datasource:
+        driver-class-name: org.h2.Driver
+        url: jdbc:h2:./temp/lsldb;AUTO_SERVER=true
+        username: user
+        password: password
+    jpa:
+        database-platform: org.hibernate.dialect.H2Dialect
+        generate-ddl: true
+        hibernate:
+            ddl-auto: validate
+        properties:
+            hibernate:
+                format_sql: true
+    flyway:
+        url: ${spring.datasource.url}
+        user: ${spring.datasource.username}
+        password: ${spring.datasource.password}
+        baseline-on-migrate: true
+    h2:
+        console:
+            enabled: true
+logging:
+    level:
+        web: trace
+---
+spring:
+    config:
+        activate:
+            on-profile: prod
