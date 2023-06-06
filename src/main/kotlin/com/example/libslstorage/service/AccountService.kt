@@ -21,13 +21,9 @@ class AccountService(
     private val passwordEncoder: PasswordEncoder
 ) {
 
-    private fun checkEmailAvailable(email: String) {
-        accountRepository.findByEmail(email)
-            ?.let { throw EmailConflictException(email) }
-    }
-
     private fun create(createRequest: CreateAccountRequest, roles: Set<RoleEntity>): AccountEntity {
-        checkEmailAvailable(createRequest.email)
+        accountRepository.findByEmail(createRequest.email)
+            ?.let { throw EmailConflictException(createRequest.email) }
         val encodedPassword = passwordEncoder.encode(createRequest.password)
         val account = AccountEntity(createRequest.name, createRequest.email, encodedPassword, roles)
         return accountRepository.save(account)
@@ -52,17 +48,14 @@ class AccountService(
         account: AccountEntity,
         updateRequest: UpdateAccountRequest
     ): AccountEntity {
-        val email = updateRequest.email
-        if (account.email != email) checkEmailAvailable(email)
-        account.email = updateRequest.email
         account.name = updateRequest.name
         return accountRepository.save(account)
     }
 
     fun updatePassword(account: AccountEntity, updateRequest: UpdateAccountPasswordRequest) {
-        val encodedOldPassword = passwordEncoder.encode(updateRequest.oldPassword)
-        if (encodedOldPassword != account.password) throw OldPasswordNotMatchException()
-        val encodedNewPassword = passwordEncoder.encode(updateRequest.newPassword)
-        account.password = encodedNewPassword
+        if (!passwordEncoder.matches(updateRequest.oldPassword, account.password))
+            throw OldPasswordNotMatchException()
+        account.password = passwordEncoder.encode(updateRequest.newPassword)
+        accountRepository.save(account)
     }
 }
