@@ -2,7 +2,6 @@ package com.example.libslstorage.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -10,31 +9,37 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
+import jakarta.persistence.UniqueConstraint
 
 @Entity
-@Table(name = "directory")
-class DirectoryEntity(
+@Table(
+    name = "specification",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["name", "directory_id"])]
+)
+class SpecificationEntity(
 
     @Column(nullable = false)
     var name: String,
 
+    @Column(nullable = false)
+    var description: String,
+
+    @Column(nullable = false)
+    var path: String,
+
+    @ManyToOne
+    @JoinColumn(name = "directory_id")
+    var directory: DirectoryEntity?,
+
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     var owner: AccountEntity,
 
-    @ManyToOne
-    @JoinColumn(name = "parent_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    val parent: DirectoryEntity?,
+    @Column(nullable = false)
+    var content: String? = null,
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
-    val children: List<DirectoryEntity> = emptyList(),
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "directory")
-    val specifications: List<SpecificationEntity> = emptyList(),
+    @OneToMany(mappedBy = "specification")
+    var errors: List<SpecificationErrorEntity> = emptyList(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
