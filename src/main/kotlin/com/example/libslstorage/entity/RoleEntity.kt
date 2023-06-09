@@ -1,6 +1,6 @@
 package com.example.libslstorage.entity
 
-import com.example.libslstorage.enum.UserRole
+import com.example.libslstorage.enums.UserRole
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated

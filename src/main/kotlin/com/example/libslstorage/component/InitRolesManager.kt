@@ -1,7 +1,7 @@
 package com.example.libslstorage.component
 
 import com.example.libslstorage.component.event.RolesReadyEvent
-import com.example.libslstorage.enum.UserRole
+import com.example.libslstorage.enums.UserRole
 import com.example.libslstorage.service.RoleService
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationEventPublisher

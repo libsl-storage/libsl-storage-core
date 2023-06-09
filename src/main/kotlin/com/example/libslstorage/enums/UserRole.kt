@@ -1,4 +1,4 @@
-package com.example.libslstorage.enum
+package com.example.libslstorage.enums
 
 enum class UserRole {
     COMMON,

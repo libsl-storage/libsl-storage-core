@@ -41,6 +41,9 @@ class SpecificationEntity(
     @OneToMany(mappedBy = "specification")
     var errors: List<SpecificationErrorEntity> = emptyList(),
 
+    @OneToMany(mappedBy = "specification")
+    var tags: List<TagEntity> = emptyList(),
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
