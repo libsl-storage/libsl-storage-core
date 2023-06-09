@@ -44,6 +44,9 @@ class SpecificationEntity(
     @OneToMany(mappedBy = "specification")
     var tags: List<TagEntity> = emptyList(),
 
+    @OneToMany(mappedBy = "specification")
+    var automatons: List<AutomatonEntity> = emptyList(),
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
