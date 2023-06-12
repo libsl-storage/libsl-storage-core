@@ -1,3 +1,7 @@
+server:
+    error:
+        include-message: always
+        include-stacktrace: never
 security:
     key: eShVmYq3t6w9z$C&F)H@McQfTjWnZr4u
     accessTokenMaxAge: 1200                 # 20 minutes in seconds

@@ -141,4 +141,9 @@ class SpecificationService(
 
         return specificationRepository.save(specification)
     }
+
+    fun delete(id: Long, currentUser: AccountEntity) {
+        val specification = findByIdWithAccessCheck(id, currentUser)
+        specificationRepository.delete(specification)
+    }
 }
