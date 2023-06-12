@@ -6,6 +6,9 @@ import com.example.libslstorage.dto.account.AccountResponse
 import com.example.libslstorage.dto.account.CreateAccountRequest
 import com.example.libslstorage.dto.account.UpdateAccountPasswordRequest
 import com.example.libslstorage.dto.account.UpdateAccountRequest
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -19,6 +22,13 @@ class AccountController(
 
     private fun AccountEntity.toResponse() = AccountResponse(id!!, email, name)
 
+    @Operation(
+        summary = "Register new account",
+        description = "Register account with specified name, email and password",
+        responses = [
+            ApiResponse(responseCode = "400", description = "Specified email already taken")
+        ]
+    )
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     fun register(@Valid @RequestBody createRequest: CreateAccountRequest): AccountResponse {
@@ -26,11 +36,21 @@ class AccountController(
         return createdAccount.toResponse()
     }
 
+    @Operation(
+        summary = "Get current account data",
+        description = "Get current account data",
+        security = [SecurityRequirement(name = "cookieAuth")]
+    )
     @GetMapping
     fun getCurrentAccount(@AuthenticationPrincipal account: AccountEntity): AccountResponse {
         return account.toResponse()
     }
 
+    @Operation(
+        summary = "Change current account data",
+        description = "Change current account name",
+        security = [SecurityRequirement(name = "cookieAuth")]
+    )
     @PostMapping
     fun updateCurrentAccount(
         @AuthenticationPrincipal account: AccountEntity,
@@ -40,6 +60,16 @@ class AccountController(
         return updatedAccount.toResponse()
     }
 
+    @Operation(
+        summary = "Change current account data",
+        description = "Change current account name",
+        security = [SecurityRequirement(name = "cookieAuth")],
+        responses = [
+            ApiResponse(responseCode = "200", description = "OK"),
+            ApiResponse(responseCode = "400", description = "Password must be between 8 and 30 characters"),
+            ApiResponse(responseCode = "403", description = "Specified old password not matches")
+        ]
+    )
     @PostMapping("/updatePassword")
     fun updatePassword(
         @AuthenticationPrincipal account: AccountEntity,
