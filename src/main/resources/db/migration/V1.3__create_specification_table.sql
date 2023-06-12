@@ -14,5 +14,5 @@ create table specification_error (
     message          varchar(255)                                           not null,
     start_position   integer                                                not null,
     end_position     integer                                                not null,
-    specification_id bigint references specification (id) on delete cascade not null,
+    specification_id bigint references specification (id) on delete cascade not null
 );
