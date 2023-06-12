@@ -15,6 +15,7 @@ import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -121,5 +122,23 @@ class SpecificationController(
         @AuthenticationPrincipal currentUser: AccountEntity
     ) {
         specificationService.updateLslFile(id, lslFile, currentUser).toResponse()
+    }
+
+    @Operation(
+        summary = "Delete specification",
+        description = "Delete specification",
+        security = [SecurityRequirement(name = "cookieAuth")],
+        responses = [
+            ApiResponse(responseCode = "200", description = "OK"),
+            ApiResponse(responseCode = "403", description = "Only specification owner can delete it"),
+            ApiResponse(responseCode = "404", description = "Specification not exists")
+        ]
+    )
+    @DeleteMapping("/{id}")
+    fun deleteSpecification(
+        @PathVariable id: Long,
+        @AuthenticationPrincipal currentUser: AccountEntity
+    ) {
+        specificationService.delete(id, currentUser)
     }
 }
