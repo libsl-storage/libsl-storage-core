@@ -2,7 +2,7 @@ package com.example.libslstorage.service
 
 import com.example.libslstorage.entity.AccountEntity
 import com.example.libslstorage.enum.UserRole
-import com.example.libslstorage.exception.EmailConflictException
+import com.example.libslstorage.exception.EmailAlreadyExistsException
 import com.example.libslstorage.exception.OldPasswordNotMatchException
 import com.example.libslstorage.entity.RoleEntity
 import com.example.libslstorage.repository.AccountRepository
@@ -23,7 +23,7 @@ class AccountService(
 
     private fun create(createRequest: CreateAccountRequest, roles: Set<RoleEntity>): AccountEntity {
         accountRepository.findByEmail(createRequest.email)
-            ?.let { throw EmailConflictException(createRequest.email) }
+            ?.let { throw EmailAlreadyExistsException(createRequest.email) }
         val encodedPassword = passwordEncoder.encode(createRequest.password)
         val account = AccountEntity(createRequest.name, createRequest.email, encodedPassword, roles)
         return accountRepository.save(account)
