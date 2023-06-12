@@ -2,7 +2,8 @@ package com.example.libslstorage.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -12,29 +13,26 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
+import org.jetbrains.research.libsl.nodes.StateKind
 
 @Entity
-@Table(name = "directory")
-class DirectoryEntity(
+@Table(name = "automaton_state")
+class AutomatonStateEntity(
 
     @Column(nullable = false)
-    var name: String,
+    val name: String,
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    val type: StateKind,
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
+    @JoinColumn(name = "automaton_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    var owner: AccountEntity,
+    val automaton: AutomatonEntity,
 
-    @ManyToOne
-    @JoinColumn(name = "parent_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    val parent: DirectoryEntity?,
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
-    val children: List<DirectoryEntity> = emptyList(),
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "directory")
-    val specifications: List<SpecificationEntity> = emptyList(),
+    @OneToMany(mappedBy = "startState")
+    val shifts: MutableList<AutomatonShiftEntity> = mutableListOf(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

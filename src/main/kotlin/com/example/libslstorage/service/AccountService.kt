@@ -1,7 +1,7 @@
 package com.example.libslstorage.service
 
 import com.example.libslstorage.entity.AccountEntity
-import com.example.libslstorage.enum.UserRole
+import com.example.libslstorage.enums.UserRole
 import com.example.libslstorage.exception.EmailAlreadyExistsException
 import com.example.libslstorage.exception.OldPasswordNotMatchException
 import com.example.libslstorage.entity.RoleEntity

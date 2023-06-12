@@ -2,7 +2,6 @@ package com.example.libslstorage.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -14,27 +13,22 @@ import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 
 @Entity
-@Table(name = "directory")
-class DirectoryEntity(
+@Table(name = "automaton")
+class AutomatonEntity(
 
     @Column(nullable = false)
     var name: String,
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    var owner: AccountEntity,
+    @Column(nullable = false)
+    var type: String,
 
     @ManyToOne
-    @JoinColumn(name = "parent_id")
+    @JoinColumn(name = "specification_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    val parent: DirectoryEntity?,
+    var specification: SpecificationEntity,
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
-    val children: List<DirectoryEntity> = emptyList(),
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "directory")
-    val specifications: List<SpecificationEntity> = emptyList(),
+    @OneToMany(mappedBy = "automaton")
+    var states: List<AutomatonStateEntity> = emptyList(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
