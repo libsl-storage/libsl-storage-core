@@ -9,6 +9,11 @@ import org.springframework.stereotype.Service
 class TagGroupService(
     private val tagGroupRepository: TagGroupRepository
 ) {
+
+    fun findAvailableTagGroups(): List<TagGroupEntity> {
+        return tagGroupRepository.findAllByNameIn(TagGroup.values().toList())
+    }
+
     fun createIfNotExist(group: TagGroup) {
         if (!tagGroupRepository.existsByName(group)) {
             val tagGroupEntity = TagGroupEntity(group)

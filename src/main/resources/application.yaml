@@ -6,6 +6,9 @@ superuser:
     name: admin
     email: superuser@example.com
     password: password
+libsl:
+    tempDir: ./temp/lsl
+specificationPageSize: 20
 ---
 spring:
     config:
