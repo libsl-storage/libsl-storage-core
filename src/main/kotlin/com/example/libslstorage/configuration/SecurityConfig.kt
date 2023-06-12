@@ -38,9 +38,13 @@ class SecurityConfig(
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http.authorizeHttpRequests { config ->
-            config.requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
-            config.requestMatchers(HttpMethod.POST, "/account/register").permitAll()
-            config.anyRequest().authenticated()
+            config.requestMatchers(HttpMethod.GET, "/account").authenticated()
+            config.requestMatchers(HttpMethod.POST, "/account").authenticated()
+            config.requestMatchers(HttpMethod.POST, "/account/updatePassword").authenticated()
+
+            config.requestMatchers(HttpMethod.POST, "/directory").authenticated()
+
+            config.anyRequest().permitAll()
         }
 
         http.sessionManagement { customizer ->
