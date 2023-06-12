@@ -27,6 +27,7 @@ class CookieService(
         val tokenCookie = Cookie(cookieName, token)
         tokenCookie.maxAge = maxAge
         tokenCookie.isHttpOnly = true
+        tokenCookie.path = "/"
         return tokenCookie
     }
 
