@@ -44,6 +44,10 @@ class SecurityConfig(
 
             config.requestMatchers(HttpMethod.POST, "/directory").authenticated()
 
+            config.requestMatchers(HttpMethod.POST, "/specification/**").authenticated()
+            config.requestMatchers(HttpMethod.POST, "/specification/page").permitAll()
+            config.requestMatchers(HttpMethod.DELETE, "/specification/**").authenticated()
+
             config.anyRequest().permitAll()
         }
 

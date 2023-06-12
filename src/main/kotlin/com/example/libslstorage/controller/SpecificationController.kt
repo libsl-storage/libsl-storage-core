@@ -2,6 +2,7 @@ package com.example.libslstorage.controller
 
 import com.example.libslstorage.dto.specification.CreateSpecificationRequest
 import com.example.libslstorage.dto.specification.SpecificationResponse
+import com.example.libslstorage.dto.specification.UpdateSpecificationRequest
 import com.example.libslstorage.entity.AccountEntity
 import com.example.libslstorage.entity.SpecificationEntity
 import com.example.libslstorage.exception.SpecificationContentNotFoundException
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/specification")
@@ -79,5 +81,45 @@ class SpecificationController(
         @AuthenticationPrincipal currentUser: AccountEntity
     ): SpecificationResponse {
         return specificationService.create(createRequest, currentUser).toResponse()
+    }
+
+    @Operation(
+        summary = "Update specification",
+        description = "Update specification description",
+        security = [SecurityRequirement(name = "cookieAuth")],
+        responses = [
+            ApiResponse(responseCode = "200", description = "OK"),
+            ApiResponse(responseCode = "400", description = "Directory by specified path already exists"),
+            ApiResponse(responseCode = "403", description = "Only specification owner can update it"),
+            ApiResponse(responseCode = "404", description = "Specification not exists")
+        ]
+    )
+    @PostMapping("/{id}")
+    fun updateSpecification(
+        @PathVariable id: Long,
+        @RequestBody updateRequest: UpdateSpecificationRequest,
+        @AuthenticationPrincipal currentUser: AccountEntity
+    ): SpecificationResponse {
+        return specificationService.update(id, updateRequest, currentUser).toResponse()
+    }
+
+    @Operation(
+        summary = "Upload specification file",
+        description = "Upload and process specification source file",
+        security = [SecurityRequirement(name = "cookieAuth")],
+        responses = [
+            ApiResponse(responseCode = "200", description = "OK"),
+            ApiResponse(responseCode = "403", description = "Only specification owner can update it"),
+            ApiResponse(responseCode = "404", description = "Specification not exists"),
+            ApiResponse(responseCode = "500", description = "Specification processing error")
+        ]
+    )
+    @PostMapping("/{id}/upload", consumes = [APPLICATION_OCTET_STREAM_VALUE])
+    fun updateSpecificationFile(
+        @PathVariable id: Long,
+        @RequestBody lslFile: MultipartFile,
+        @AuthenticationPrincipal currentUser: AccountEntity
+    ) {
+        specificationService.updateLslFile(id, lslFile, currentUser).toResponse()
     }
 }
