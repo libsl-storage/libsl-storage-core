@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.server.ResponseStatusException
 import kotlin.io.path.Path
-import kotlin.io.path.createDirectory
+import kotlin.io.path.createDirectories
 import kotlin.io.path.createTempDirectory
 import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
@@ -60,7 +60,7 @@ class SpecificationService(
     fun init() {
         val tempDirPath = Path(libslTempDir)
         if (tempDirPath.exists() && !tempDirPath.isDirectory()) Files.delete(tempDirPath)
-        if (tempDirPath.notExists()) tempDirPath.createDirectory()
+        if (tempDirPath.notExists()) tempDirPath.createDirectories()
     }
 
     fun findById(id: Long): SpecificationEntity {
