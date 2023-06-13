@@ -15,8 +15,7 @@ create table automaton_state (
 create table automaton_shift (
     id             bigserial primary key,
     start_state_id bigint references automaton_state (id) on delete cascade not null,
-    end_state_id   bigint references automaton_state (id)                   not null,
-    constraint pk_automaton_shift primary key (id)
+    end_state_id   bigint references automaton_state (id)                   not null
 );
 
 create table automaton_function (
