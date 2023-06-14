@@ -18,6 +18,7 @@ env:
   DB_URL: ${{ secrets.DB_URL }}
   DB_USERNAME: ${{ secrets.DB_USERNAME }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  SECURITY_KEY: ${{ secrets.SECURITY_KEY }}
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   push_to_registry:

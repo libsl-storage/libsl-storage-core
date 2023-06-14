@@ -3,7 +3,7 @@ server:
         include-message: always
         include-stacktrace: never
 security:
-    key: eShVmYq3t6w9z$C&F)H@McQfTjWnZr4u
+    key: ${SECURITY_KEY}
     accessTokenMaxAge: 1200                 # 20 minutes in seconds
     refreshTokenMaxAge: 604800              # 7 days in seconds
 superuser:
