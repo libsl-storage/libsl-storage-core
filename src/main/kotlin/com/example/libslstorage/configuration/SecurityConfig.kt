@@ -64,7 +64,7 @@ class SecurityConfig(
         http.httpBasic().disable()
 
         http.csrf().disable()
-        http.cors().disable()
+        http.cors()
 
         return http.build()
     }
