@@ -32,6 +32,8 @@ tasks.withType<Test> {
 }
 
 dependencies {
+    // LibSL
+    implementation("com.github.vpa-research:libsl-parser:026de0c9f6")
 
     // Spring Boot
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
@@ -63,9 +65,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
-    // LibSL
-    implementation("com.github.vpa-research:libsl-parser:026de0c9f6")
 
     // Test
     testImplementation("org.springframework.security:spring-security-test")
