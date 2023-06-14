@@ -6,4 +6,4 @@ RUN gradle build -x test --no-daemon
 FROM openjdk:22-jdk
 RUN mkdir /app
 COPY --from=build /home/gradle/src/build/libs/libsl-storage-0.0.1-SNAPSHOT.jar /app/spring-boot-application.jar
-ENTRYPOINT ["java", "-jar", "/app/spring-boot-application.jar", "--spring.profiles.active=dev"]
+ENTRYPOINT ["java", "-jar", "/app/spring-boot-application.jar", "--spring.profiles.active=prod"]

@@ -7,9 +7,9 @@ security:
     accessTokenMaxAge: 1200                 # 20 minutes in seconds
     refreshTokenMaxAge: 604800              # 7 days in seconds
 superuser:
-    name: admin
-    email: superuser@example.com
-    password: password
+    name: ${SUPERUSER_NAME}
+    email: ${SUPERUSER_EMAIL}
+    password: ${SUPERUSER_PASSWORD}
 libsl:
     tempDir: ./temp/lsl
 specificationPageSize: 20
@@ -47,3 +47,21 @@ spring:
     config:
         activate:
             on-profile: prod
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        url: ${DB_URL}
+        username: ${DB_USERNAME}
+        password: ${DB_PASSWORD}
+    flyway:
+        url: ${spring.datasource.url}
+        user: ${spring.datasource.username}
+        password: ${spring.datasource.password}
+        baseline-on-migrate: true
+    jpa:
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
+        generate-ddl: true
+        hibernate:
+            ddl-auto: validate
+        properties:
+            hibernate:
+                format_sql: true
