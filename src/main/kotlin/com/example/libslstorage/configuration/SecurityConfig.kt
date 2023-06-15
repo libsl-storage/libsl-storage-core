@@ -1,5 +1,6 @@
 package com.example.libslstorage.configuration
 
+import com.example.libslstorage.component.JwtAuthenticationEntryPoint
 import com.example.libslstorage.component.JwtAuthenticationFilter
 import com.example.libslstorage.service.AccountDetailService
 import org.springframework.context.annotation.Bean
@@ -21,7 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 class SecurityConfig(
     private val accountDetailService: AccountDetailService,
-    private val jwtAuthenticationFilter: JwtAuthenticationFilter
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter,
+    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint
 ) {
 
     @Bean
@@ -59,6 +61,10 @@ class SecurityConfig(
             jwtAuthenticationFilter,
             UsernamePasswordAuthenticationFilter::class.java
         )
+
+        http.exceptionHandling { config ->
+            config.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+        }
 
         http.formLogin().disable()
         http.httpBasic().disable()
