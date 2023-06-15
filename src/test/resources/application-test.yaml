@@ -1,7 +1,4 @@
 spring:
-    config:
-        activate:
-            on-profile: test
     datasource:
         url: jdbc:tc:postgresql:15.3:///lsldb
         username: user
@@ -11,14 +8,11 @@ spring:
             ddl-auto: validate
     flyway:
         baseline-on-migrate: true
-security:
-    key: eShVmYq3t6w9z$C&F)H@McQfTjWnZr4u
-    accessTokenMaxAge: 1200
-    refreshTokenMaxAge: 604800
 superuser:
     name: admin
-    email: admin@example.com
+    email: admin@user.com
     password: password
-libsl:
-    tempDir: ./temp/lsl
-specificationPageSize: 20
+user:
+    name: user
+    email: user@user.com
+    password: password
