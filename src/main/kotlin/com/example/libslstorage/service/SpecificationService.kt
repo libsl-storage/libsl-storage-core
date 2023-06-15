@@ -5,6 +5,7 @@ import com.example.libslstorage.dto.specification.UpdateSpecificationRequest
 import com.example.libslstorage.entity.AccountEntity
 import com.example.libslstorage.entity.SpecificationEntity
 import com.example.libslstorage.enums.UserRole
+import com.example.libslstorage.exception.SPECIFICATION_ACCESS_DENIED_ERROR_MESSAGE
 import com.example.libslstorage.exception.SpecificationAlreadyExistsException
 import com.example.libslstorage.repository.SpecificationRepository
 import jakarta.annotation.PostConstruct
@@ -67,8 +68,8 @@ class SpecificationService(
 
     fun findByIdWithAccessCheck(id: Long, currentUser: AccountEntity): SpecificationEntity {
         val specification = findById(id)
-        if (specification.owner != currentUser && currentUser.roles.all { it.name != UserRole.SUPER })
-            throw AccessDeniedException("Only specification owner can update or delete it")
+        if (specification.owner.id != currentUser.id && currentUser.roles.all { it.name != UserRole.SUPER })
+            throw AccessDeniedException(SPECIFICATION_ACCESS_DENIED_ERROR_MESSAGE)
         return specification
     }
 
