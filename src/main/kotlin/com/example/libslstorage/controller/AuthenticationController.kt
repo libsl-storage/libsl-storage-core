@@ -3,7 +3,6 @@ package com.example.libslstorage.controller
 import com.example.libslstorage.entity.AccountEntity
 import com.example.libslstorage.service.AuthenticationService
 import com.example.libslstorage.service.CookieService
-import com.example.libslstorage.util.ACCESS_TOKEN_COOKIE_NAME
 import com.example.libslstorage.util.REFRESH_TOKEN_COOKIE_NAME
 import com.example.libslstorage.dto.LoginRequest
 import io.swagger.v3.oas.annotations.Operation
@@ -23,11 +22,8 @@ class AuthenticationController(
     private val authenticationService: AuthenticationService
 ) {
 
-    private fun createJwtCookies(account: AccountEntity, response: HttpServletResponse) {
-        val accessTokenCookie = cookieService.createAccessTokenCookie(account)
-        val refreshTokenCookie = cookieService.createRefreshTokenCookie(account)
-        response.addCookie(accessTokenCookie)
-        response.addCookie(refreshTokenCookie)
+    private fun createAuthCookies(account: AccountEntity, response: HttpServletResponse) {
+        cookieService.createAuthCookies(account).forEach { response.addCookie(it) }
     }
 
     @Operation(
@@ -44,7 +40,7 @@ class AuthenticationController(
             request.email,
             request.password
         )
-        createJwtCookies(account, response)
+        createAuthCookies(account, response)
     }
 
     @Operation(
@@ -54,11 +50,10 @@ class AuthenticationController(
     )
     @PostMapping("/refresh")
     fun refresh(
-        @CookieValue(name = ACCESS_TOKEN_COOKIE_NAME) accessToken: String,
         @CookieValue(name = REFRESH_TOKEN_COOKIE_NAME) refreshToken: String,
         response: HttpServletResponse
     ) {
         val account = authenticationService.authenticateByJwt(refreshToken)
-        createJwtCookies(account, response)
+        createAuthCookies(account, response)
     }
 }
