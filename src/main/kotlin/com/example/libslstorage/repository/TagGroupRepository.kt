@@ -7,7 +7,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface TagGroupRepository: JpaRepository<TagGroupEntity, TagGroup> {
-    fun existsByName(name: TagGroup): Boolean
-
-    fun findAllByNameIn(names: List<TagGroup>): List<TagGroupEntity>
+    fun findByName(name: TagGroup): TagGroupEntity?
 }

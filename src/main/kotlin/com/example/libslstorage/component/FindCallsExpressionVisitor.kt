@@ -11,14 +11,13 @@ import org.jetbrains.research.libsl.nodes.ConstructorArgument
 import org.jetbrains.research.libsl.nodes.ExpressionVisitor
 import org.jetbrains.research.libsl.nodes.FloatLiteral
 import org.jetbrains.research.libsl.nodes.FunctionArgument
-import org.jetbrains.research.libsl.nodes.HasAutomatonConcept
 import org.jetbrains.research.libsl.nodes.IntegerLiteral
-import org.jetbrains.research.libsl.nodes.NamedArgumentWithValue
 import org.jetbrains.research.libsl.nodes.OldValue
 import org.jetbrains.research.libsl.nodes.ProcExpression
 import org.jetbrains.research.libsl.nodes.ResultVariable
 import org.jetbrains.research.libsl.nodes.StringLiteral
-import org.jetbrains.research.libsl.nodes.ThisAccess
+import org.jetbrains.research.libsl.nodes.ThisAndParentAccess
+import org.jetbrains.research.libsl.nodes.ThisExpression
 import org.jetbrains.research.libsl.nodes.UnaryOpExpression
 import org.jetbrains.research.libsl.nodes.Variable
 import org.jetbrains.research.libsl.nodes.VariableAccess
@@ -72,16 +71,8 @@ class FindCallsExpressionVisitor: ExpressionVisitor<List<CallAutomatonConstructo
         return emptyList()
     }
 
-    override fun visitHasAutomatonConcept(node: HasAutomatonConcept): List<CallAutomatonConstructor> {
-        return emptyList()
-    }
-
     override fun visitIntegerNumber(node: IntegerLiteral): List<CallAutomatonConstructor> {
         return emptyList()
-    }
-
-    override fun visitNamedArgumentWithValue(node: NamedArgumentWithValue): List<CallAutomatonConstructor> {
-        return visit(node.value)
     }
 
     override fun visitOldValue(node: OldValue): List<CallAutomatonConstructor> {
@@ -89,7 +80,7 @@ class FindCallsExpressionVisitor: ExpressionVisitor<List<CallAutomatonConstructo
     }
 
     override fun visitProcExpression(node: ProcExpression): List<CallAutomatonConstructor> {
-        return node.procedureCall.arguments.flatMap { visit(it) }
+        return node.proc.arguments.flatMap { visit(it) }
     }
 
     override fun visitResultVariable(node: ResultVariable): List<CallAutomatonConstructor> {
@@ -100,7 +91,11 @@ class FindCallsExpressionVisitor: ExpressionVisitor<List<CallAutomatonConstructo
         return emptyList()
     }
 
-    override fun visitThisAccess(node: ThisAccess): List<CallAutomatonConstructor> {
+    override fun visitThisExpression(node: ThisExpression): List<CallAutomatonConstructor> {
+        return emptyList()
+    }
+
+    override fun visitThisAndParentAccess(node: ThisAndParentAccess): List<CallAutomatonConstructor> {
         return emptyList()
     }
 

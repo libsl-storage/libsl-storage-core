@@ -2,6 +2,7 @@ server:
     error:
         include-message: always
         include-stacktrace: never
+        include-binding-errors: always
 security:
     allowedOrigins: ${ALLOWED_ORIGINS}
     key: ${SECURITY_KEY}

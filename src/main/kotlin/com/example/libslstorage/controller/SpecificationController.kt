@@ -14,6 +14,7 @@ import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
+import org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -115,7 +116,7 @@ class SpecificationController(
             ApiResponse(responseCode = "500", description = "Specification processing error")
         ]
     )
-    @PostMapping("/{id}/upload", consumes = [APPLICATION_OCTET_STREAM_VALUE])
+    @PostMapping("/{id}/upload", consumes = [MULTIPART_FORM_DATA_VALUE])
     fun updateSpecificationFile(
         @PathVariable id: Long,
         @RequestBody lslFile: MultipartFile,

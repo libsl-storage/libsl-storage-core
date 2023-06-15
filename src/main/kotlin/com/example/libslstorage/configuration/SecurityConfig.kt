@@ -1,6 +1,6 @@
 package com.example.libslstorage.configuration
 
-import com.example.libslstorage.configuration.security.JwtAuthenticationFilter
+import com.example.libslstorage.component.JwtAuthenticationFilter
 import com.example.libslstorage.service.AccountDetailService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

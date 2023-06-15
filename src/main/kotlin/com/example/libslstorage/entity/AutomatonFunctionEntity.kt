@@ -27,6 +27,9 @@ class AutomatonFunctionEntity(
     @OneToMany(mappedBy = "function")
     var automatonCalls: List<AutomatonCallEntity> = emptyList(),
 
+    @OneToMany(mappedBy = "function")
+    var arguments: List<AutomatonFunctionArgumentEntity> = emptyList(),
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null

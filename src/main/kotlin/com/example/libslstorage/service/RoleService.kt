@@ -11,15 +11,6 @@ import org.springframework.transaction.annotation.Transactional
 class RoleService(
     private val roleRepository: RoleRepository
 ) {
-
-    fun findByName(role: UserRole): RoleEntity {
-        return roleRepository.findByName(role)
-    }
-
-    fun createIfNotExist(role: UserRole) {
-        if (!roleRepository.existsByName(role)) {
-            val roleEntity = RoleEntity(role)
-            roleRepository.save(roleEntity)
-        }
-    }
+    fun createIfNotExist(role: UserRole) = roleRepository.findByName(role)
+        ?: roleRepository.save(RoleEntity(role))
 }

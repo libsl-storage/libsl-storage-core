@@ -9,10 +9,12 @@ import com.example.libslstorage.repository.DirectoryRepository
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import kotlin.jvm.optionals.getOrElse
 
 @Service
+@Transactional
 class DirectoryService(
     private val directoryRepository: DirectoryRepository
 ) {

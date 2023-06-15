@@ -9,8 +9,10 @@ import org.jetbrains.research.libsl.nodes.State
 import org.jetbrains.research.libsl.nodes.references.AutomatonReference
 import org.jetbrains.research.libsl.nodes.references.AutomatonStateReference
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class AutomatonService(
     private val automatonRepository: AutomatonRepository,
     private val automatonStateService: AutomatonStateService,
@@ -20,18 +22,18 @@ class AutomatonService(
 
     private fun automatonResolver(
         automatons: Map<Automaton, AutomatonEntity>
-    ): (AutomatonReference) -> AutomatonEntity = { ref ->
+    ): (AutomatonReference) -> AutomatonEntity? = { ref ->
         automatons.entries
-            .first { ref.isReferenceMatchWithNode(it.key) }
-            .value
+            .find { ref.isReferenceMatchWithNode(it.key) }
+            ?.value
     }
 
     private fun automatonStateResolver(
         states: Map<State, AutomatonStateEntity>
-    ): (AutomatonStateReference) -> AutomatonStateEntity = { ref ->
+    ): (AutomatonStateReference) -> AutomatonStateEntity? = { ref ->
         states.entries
-            .first { ref.isReferenceMatchWithNode(it.key) }
-            .value
+            .find { ref.isReferenceMatchWithNode(it.key) }
+            ?.value
     }
 
     fun create(
@@ -66,10 +68,10 @@ class AutomatonService(
             lslAutomaton.shifts.forEach { lslShift ->
                 val start = states.getValue(lslShift.from)
                 val end = states.getValue(lslShift.to)
-                val shiftFunctions = lslShift.functions.map { functionRef ->
+                val shiftFunctions = lslShift.functions.mapNotNull { functionRef ->
                     functions.entries
-                        .first { functionRef.isReferenceMatchWithNode(it.key) }
-                        .value
+                        .find { functionRef.isReferenceMatchWithNode(it.key) }
+                        ?.value
                 }
                 automatonShiftService.create(start, end, shiftFunctions)
             }

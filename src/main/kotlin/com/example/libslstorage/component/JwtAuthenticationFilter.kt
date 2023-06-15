@@ -1,4 +1,4 @@
-package com.example.libslstorage.configuration.security
+package com.example.libslstorage.component
 
 import com.example.libslstorage.service.AccountDetailService
 import com.example.libslstorage.service.TokenService
