@@ -33,7 +33,7 @@ tasks.withType<Test> {
 
 dependencies {
     // LibSL
-    implementation("com.github.vpa-research:libsl-parser:026de0c9f6")
+    implementation("com.github.vpa-research:libsl-parser:1e92fb6")
 
     // Spring Boot
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")

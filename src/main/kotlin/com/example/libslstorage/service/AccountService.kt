@@ -1,7 +1,6 @@
 package com.example.libslstorage.service
 
 import com.example.libslstorage.entity.AccountEntity
-import com.example.libslstorage.enums.UserRole
 import com.example.libslstorage.exception.EmailAlreadyExistsException
 import com.example.libslstorage.exception.OldPasswordNotMatchException
 import com.example.libslstorage.entity.RoleEntity
@@ -16,33 +15,29 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class AccountService(
-    private val roleService: RoleService,
     private val accountRepository: AccountRepository,
     private val passwordEncoder: PasswordEncoder
 ) {
 
-    private fun create(createRequest: CreateAccountRequest, roles: Set<RoleEntity>): AccountEntity {
-        accountRepository.findByEmail(createRequest.email)
-            ?.let { throw EmailAlreadyExistsException(createRequest.email) }
-        val encodedPassword = passwordEncoder.encode(createRequest.password)
-        val account = AccountEntity(createRequest.name, createRequest.email, encodedPassword, roles)
+    fun findByEmail(email: String): AccountEntity? {
+        return accountRepository.findByEmail(email)
+    }
+
+    fun create(
+        name: String,
+        email: String,
+        password: String,
+        roles: Set<RoleEntity>
+    ): AccountEntity {
+        accountRepository.findByEmail(email)
+            ?.let { throw EmailAlreadyExistsException(email) }
+        val encodedPassword = passwordEncoder.encode(password)
+        val account = AccountEntity(name, email, encodedPassword, roles)
         return accountRepository.save(account)
     }
 
-    fun createCommon(createRequest: CreateAccountRequest): AccountEntity {
-        val commonRole = roleService.findByName(UserRole.COMMON)
-        val roles = setOf(commonRole)
-        return create(createRequest, roles)
-    }
-
-    fun createSuper(createRequest: CreateAccountRequest): AccountEntity {
-        val superRole = roleService.findByName(UserRole.SUPER)
-        val commonRole = roleService.findByName(UserRole.COMMON)
-        val roles = setOf(commonRole, superRole)
-        return superRole.accounts
-            .find { it.email == createRequest.email }
-            ?: create(createRequest, roles)
-    }
+    fun create(createRequest: CreateAccountRequest, roles: Set<RoleEntity>) =
+        create(createRequest.name, createRequest.email, createRequest.password, roles)
 
     fun update(
         account: AccountEntity,

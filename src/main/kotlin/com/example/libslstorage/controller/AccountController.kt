@@ -6,6 +6,8 @@ import com.example.libslstorage.dto.account.AccountResponse
 import com.example.libslstorage.dto.account.CreateAccountRequest
 import com.example.libslstorage.dto.account.UpdateAccountPasswordRequest
 import com.example.libslstorage.dto.account.UpdateAccountRequest
+import com.example.libslstorage.entity.RoleEntity
+import com.example.libslstorage.enums.UserRole
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/account")
 class AccountController(
+    private val roleHolder: Map<UserRole, RoleEntity>,
     private val accountService: AccountService
 ) {
 
@@ -32,7 +35,8 @@ class AccountController(
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     fun register(@Valid @RequestBody createRequest: CreateAccountRequest): AccountResponse {
-        val createdAccount = accountService.createCommon(createRequest)
+        val commonRole = roleHolder.getValue(UserRole.COMMON)
+        val createdAccount = accountService.create(createRequest, setOf(commonRole))
         return createdAccount.toResponse()
     }
 
