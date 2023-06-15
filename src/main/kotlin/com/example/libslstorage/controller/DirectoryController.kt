@@ -25,7 +25,7 @@ class DirectoryController(
     private val directoryService: DirectoryService
 ) {
 
-    private fun DirectoryEntity.toResponse() = DirectoryResponse(id!!, name)
+    private fun DirectoryEntity.toResponse() = DirectoryResponse(id!!, parent?.id, name)
 
     @Operation(
         summary = "Get subdirectories",
@@ -70,6 +70,6 @@ class DirectoryController(
         @AuthenticationPrincipal currentUser: AccountEntity,
     ): DirectoryResponse {
         val directory = directoryService.create(request, currentUser)
-        return DirectoryResponse(directory.id!!, directory.name)
+        return DirectoryResponse(directory.id!!, directory.parent?.id, directory.name)
     }
 }
