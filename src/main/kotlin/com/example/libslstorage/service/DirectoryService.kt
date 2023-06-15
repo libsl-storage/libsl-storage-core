@@ -4,6 +4,7 @@ import com.example.libslstorage.dto.directory.CreateDirectoryRequest
 import com.example.libslstorage.entity.AccountEntity
 import com.example.libslstorage.entity.DirectoryEntity
 import com.example.libslstorage.enums.UserRole
+import com.example.libslstorage.exception.DIRECTORY_ACCESS_DENIED_ERROR_MESSAGE
 import com.example.libslstorage.exception.DirectoryAlreadyExistsException
 import com.example.libslstorage.repository.DirectoryRepository
 import org.springframework.http.HttpStatus
@@ -19,12 +20,6 @@ class DirectoryService(
     private val directoryRepository: DirectoryRepository
 ) {
 
-    private fun checkAccess(directory: DirectoryEntity, currentUser: AccountEntity) {
-        if (directory.owner != currentUser &&
-            currentUser.roles.all { it.name != UserRole.SUPER }
-        ) throw AccessDeniedException("Only directory owner can create subdirectories and specifications")
-    }
-
     fun findById(id: Long): DirectoryEntity {
         return directoryRepository.findById(id).getOrElse {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "No directory by id $id")
@@ -33,7 +28,8 @@ class DirectoryService(
 
     fun findByIdWithAccessCheck(id: Long, currentUser: AccountEntity): DirectoryEntity {
         val directory = findById(id)
-        checkAccess(directory, currentUser)
+        if (directory.owner.id != currentUser.id && currentUser.roles.all { it.name != UserRole.SUPER })
+            throw AccessDeniedException(DIRECTORY_ACCESS_DENIED_ERROR_MESSAGE)
         return directory
     }
 
