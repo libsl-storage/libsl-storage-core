@@ -61,6 +61,69 @@ class AccountIntegrationTest : AbstractIntegrationTest() {
                 assertEquals(request.email, account.email)
                 assertTrue(passwordEncoder.matches(request.password, account.password))
             }
+    }
 
+    @Test
+    fun `Should fail with email already taken`() {
+        val request = CreateAccountRequest("new", "new@user.com", "password")
+
+        accountRepository.save(
+            AccountEntity(
+                request.name,
+                request.email,
+                passwordEncoder.encode(request.password),
+                setOf()
+            )
+        )
+
+        webTestClient.post()
+            .uri("/account/register")
+            .bodyValue(request)
+            .exchange()
+            .expectStatus()
+            .isBadRequest
+            .expectBody()
+            .jsonPath("$.message")
+            .isEqualTo(EMAIL_ALREADY_EXISTS_ERROR_MESSAGE)
+    }
+
+    @Test
+    fun `Should fail with validation errors`() {
+        val request = CreateAccountRequest(
+            "",
+            "invalid",
+            "quuuuuuuuuuuuuuuuuuuuuuuuuuuuuz"
+        )
+
+        webTestClient.post()
+            .uri("/account/register")
+            .bodyValue(request)
+            .exchange()
+            .expectStatus()
+            .isBadRequest
+            .expectBody()
+            .jsonPath("$.errors[?(@.code==\"NotBlank\"&&@.field==\"name\")].defaultMessage")
+            .isEqualTo(BLANK_NAME_VALIDATION_MESSAGE)
+            .jsonPath("$.errors[?(@.code==\"Email\"&&@.field==\"email\")].defaultMessage")
+            .isEqualTo(INVALID_EMAIL_VALIDATION_MESSAGE)
+            .jsonPath("$.errors[?(@.code==\"Size\"&&@.field==\"password\")].defaultMessage")
+            .isEqualTo(INVALID_PASSWORD_SIZE_VALIDATION_MESSAGE)
+    }
+
+    @Test
+    fun `Should return authenticated account info`() {
+        val accessToken = createAccessToken(testUserAccount)
+        webTestClient.get()
+            .uri("/account")
+            .cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken)
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody(AccountResponse::class.java)
+            .value {
+                assertEquals(testUserAccount.id, it.id)
+                assertEquals(testUserAccount.email, it.email)
+                assertEquals(testUserAccount.name, it.name)
+            }
     }
 }
