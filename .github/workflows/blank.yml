@@ -12,7 +12,15 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
+env:
+  SUPERUSER_NAME: ${{ secrets.SUPERUSER_NAME }}
+  SUPERUSER_EMAIL: ${{ secrets.SUPERUSER_EMAIL }}
+  SUPERUSER_PASSWORD: ${{ secrets.SUPERUSER_PASSWORD }}
+  DB_URL: ${{ secrets.DB_URL }}
+  DB_USERNAME: ${{ secrets.DB_USERNAME }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  SECURITY_KEY: ${{ secrets.SECURITY_KEY }}
+  ALLOWED_ORIGINS: ${{ secrets.ALLOWED_ORIGINS }}
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
