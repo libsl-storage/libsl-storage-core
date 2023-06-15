@@ -5,8 +5,10 @@ import com.example.libslstorage.entity.AutomatonShiftEntity
 import com.example.libslstorage.entity.AutomatonStateEntity
 import com.example.libslstorage.repository.AutomatonShiftRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class AutomatonShiftService(
     private val automatonShiftRepository: AutomatonShiftRepository
 ) {

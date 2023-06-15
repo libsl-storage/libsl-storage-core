@@ -5,8 +5,10 @@ import com.example.libslstorage.entity.SpecificationErrorEntity
 import com.example.libslstorage.repository.SpecificationErrorRepository
 import org.jetbrains.research.libsl.errors.LslError
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class SpecificationErrorService(
     private val specificationErrorRepository: SpecificationErrorRepository
 ) {

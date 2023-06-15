@@ -6,8 +6,10 @@ import com.example.libslstorage.entity.AutomatonFunctionEntity
 import com.example.libslstorage.entity.AutomatonStateEntity
 import com.example.libslstorage.repository.AutomatonCallRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class AutomatonCallService(
     private val automatonCallRepository: AutomatonCallRepository
 ) {

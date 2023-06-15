@@ -42,17 +42,13 @@ class SpecificationService(
     private lateinit var libslTempDir: String
 
     private fun processFile(lslFile: Path, tempDir: Path, specification: SpecificationEntity) {
-        try {
-            val (libsl, library) = libslService.processFile(tempDir, lslFile)
-            val errors = libsl.errorManager.errors
-            if (errors.isNotEmpty()) {
-                specificationErrorService.create(errors, specification)
-            } else {
-                tagService.createMetaTags(library.metadata, specification)
-                automatonService.create(library.automataReferences, specification)
-            }
-        } finally {
-            tempDir.toFile().deleteRecursively()
+        val (libsl, library) = libslService.processFile(tempDir, lslFile)
+        val errors = libsl.errorManager.errors
+        if (errors.isNotEmpty()) {
+            specificationErrorService.create(errors, specification)
+        } else {
+            tagService.createMetaTags(library.metadata, specification)
+            automatonService.create(library.automataReferences, specification)
         }
     }
 
