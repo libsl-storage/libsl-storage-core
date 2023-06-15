@@ -8,9 +8,11 @@ import com.example.libslstorage.dto.account.UpdateAccountPasswordRequest
 import com.example.libslstorage.dto.account.UpdateAccountRequest
 import com.example.libslstorage.entity.RoleEntity
 import com.example.libslstorage.enums.UserRole
+import com.example.libslstorage.service.CookieService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -20,7 +22,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/account")
 class AccountController(
     private val roleHolder: Map<UserRole, RoleEntity>,
-    private val accountService: AccountService
+    private val accountService: AccountService,
+    private val cookieService: CookieService
 ) {
 
     private fun AccountEntity.toResponse() = AccountResponse(id!!, email, name)
@@ -34,10 +37,14 @@ class AccountController(
     )
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    fun register(@Valid @RequestBody createRequest: CreateAccountRequest): AccountResponse {
+    fun register(
+        @Valid @RequestBody createRequest: CreateAccountRequest,
+        response: HttpServletResponse
+    ): AccountResponse {
         val commonRole = roleHolder.getValue(UserRole.COMMON)
-        val createdAccount = accountService.create(createRequest, setOf(commonRole))
-        return createdAccount.toResponse()
+        val account = accountService.create(createRequest, setOf(commonRole))
+        cookieService.createAuthCookies(account).forEach { response.addCookie(it) }
+        return account.toResponse()
     }
 
     @Operation(

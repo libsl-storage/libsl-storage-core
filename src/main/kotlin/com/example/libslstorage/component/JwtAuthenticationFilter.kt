@@ -2,7 +2,6 @@ package com.example.libslstorage.component
 
 import com.example.libslstorage.service.AccountDetailService
 import com.example.libslstorage.service.TokenService
-import com.example.libslstorage.util.ACCESS_TOKEN_COOKIE_NAME
 import com.example.libslstorage.util.getAccessTokenCookie
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -26,9 +25,7 @@ class JwtAuthenticationFilter(
     ) {
         try {
             val accessToken = request.getAccessTokenCookie()?.value
-            if (accessToken == null) {
-                logger.debug("No $ACCESS_TOKEN_COOKIE_NAME cookie present")
-            } else {
+            if (accessToken != null) {
                 val email = tokenService.decodeToken(accessToken).subject
                 val account = accountDetailService.loadUserByUsername(email)
                 val authenticationToken = UsernamePasswordAuthenticationToken(
@@ -39,7 +36,7 @@ class JwtAuthenticationFilter(
                 SecurityContextHolder.getContext().authentication = authenticationToken
             }
         } catch(e: JwtValidationException) {
-            logger.debug(e.message)
+            logger.error(e.message)
         }
         filterChain.doFilter(request, response)
     }

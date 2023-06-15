@@ -2,6 +2,7 @@ package com.example.libslstorage.service
 
 import com.example.libslstorage.entity.AccountEntity
 import com.example.libslstorage.util.ACCESS_TOKEN_COOKIE_NAME
+import com.example.libslstorage.util.AUTH_FLAG_COOKIE_NAME
 import com.example.libslstorage.util.REFRESH_TOKEN_COOKIE_NAME
 import jakarta.servlet.http.Cookie
 import org.springframework.beans.factory.annotation.Value
@@ -37,5 +38,19 @@ class CookieService(
 
     fun createRefreshTokenCookie(account: AccountEntity): Cookie {
         return createTokenCookie(account, REFRESH_TOKEN_COOKIE_NAME, refreshTokenMaxAge)
+    }
+
+    fun createAuthFlagCookie(): Cookie {
+        val cookie = Cookie(AUTH_FLAG_COOKIE_NAME, "")
+        cookie.path = "/"
+        cookie.maxAge = refreshTokenMaxAge
+        return cookie
+    }
+
+    fun createAuthCookies(account: AccountEntity): List<Cookie> {
+        val accessTokenCookie = createAccessTokenCookie(account)
+        val refreshTokenCookie = createRefreshTokenCookie(account)
+        val authFlagCookie = createAuthFlagCookie()
+        return listOf(accessTokenCookie, refreshTokenCookie, authFlagCookie)
     }
 }
