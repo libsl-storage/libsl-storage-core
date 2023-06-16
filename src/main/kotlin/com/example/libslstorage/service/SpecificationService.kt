@@ -8,6 +8,7 @@ import com.example.libslstorage.enums.UserRole
 import com.example.libslstorage.exception.SPECIFICATION_ACCESS_DENIED_ERROR_MESSAGE
 import com.example.libslstorage.exception.SpecificationAlreadyExistsException
 import com.example.libslstorage.repository.SpecificationRepository
+import com.example.libslstorage.util.LslErrorListener
 import jakarta.annotation.PostConstruct
 import java.nio.file.Files
 import java.nio.file.Path
@@ -43,12 +44,14 @@ class SpecificationService(
     private lateinit var libslTempDir: String
 
     private fun processFile(lslFile: Path, tempDir: Path, specification: SpecificationEntity) {
-        val (libsl, library) = libslService.processFile(tempDir, lslFile)
-        val errors = libsl.errorManager.errors
-        if (errors.isNotEmpty()) {
-            specificationErrorService.create(errors, specification)
+        val errorListener = LslErrorListener(specification)
+        val (libsl, library) = libslService.processFile(tempDir, lslFile, errorListener)
+        val errors = libsl?.errorManager?.errors ?: emptyList()
+        if (errors.isNotEmpty() || errorListener.errors.isNotEmpty()) {
+            specificationErrorService.createByLslErrors(errors, specification)
+            specificationErrorService.create(errorListener.errors, specification)
         } else {
-            tagService.createMetaTags(library.metadata, specification)
+            tagService.createMetaTags(library!!.metadata, specification)
             automatonService.create(library.automataReferences, specification)
         }
     }
