@@ -26,12 +26,16 @@ class AuthenticationController(
         cookieService.createAuthCookies(account).forEach { response.addCookie(it) }
     }
 
+    private fun deleteAuthCookies(response: HttpServletResponse) {
+        cookieService.deleteAuthCookies().forEach { response.addCookie(it) }
+    }
+
     @Operation(
         summary = "Authenticate user",
         description = "Authenticate user by email and password",
         responses = [
-            ApiResponse(responseCode = "200", description = "OK"),
-            ApiResponse(responseCode = "401", description = "Incorrect authentication data"),
+            ApiResponse(responseCode = "200", description = "OK, sets cookies authFlag, accessToken, refreshToken"),
+            ApiResponse(responseCode = "400", description = "Incorrect authentication data"),
         ]
     )
     @PostMapping("/login")
@@ -55,5 +59,20 @@ class AuthenticationController(
     ) {
         val account = authenticationService.authenticateByJwt(refreshToken)
         createAuthCookies(account, response)
+    }
+
+    @Operation(
+        summary = "Refresh access token",
+        description = "Authenticate user by email and password",
+        security = [SecurityRequirement(name = "cookieRefresh")],
+        responses = [
+            ApiResponse(responseCode = "200", description = "OK, deletes cookies authFlag, accessToken, refreshToken")
+        ]
+    )
+    @PostMapping("/logout")
+    fun logout(
+        response: HttpServletResponse
+    ) {
+        deleteAuthCookies(response)
     }
 }
