@@ -44,8 +44,8 @@ class AutomatonCallEntity(
     @MapsId("init_state_id")
     @ManyToOne
     @JoinColumn(name = "init_state_id")
-    val initState: AutomatonStateEntity,
-
+    val initState: AutomatonStateEntity
+) {
     @EmbeddedId
-    var id: AutomatonCallId? = null
-)
+    var id = AutomatonCallId(function.id!!, automaton.id!!, initState.id!!)
+}

@@ -15,16 +15,9 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.crypto.password.PasswordEncoder
 
 class AccountIntegrationTest : AbstractIntegrationTest() {
-
-    @Value("\${superuser.email}")
-    private lateinit var superUserEmail: String
-
-    @Autowired
-    private lateinit var testUserAccount: AccountEntity
 
     @Autowired
     private lateinit var passwordEncoder: PasswordEncoder
@@ -35,7 +28,7 @@ class AccountIntegrationTest : AbstractIntegrationTest() {
     @AfterEach
     fun tearDown() {
         transactionTemplate.execute {
-            accountRepository.deleteAllByEmailNotIn(setOf(testUserAccount.email, superUserEmail))
+            accountRepository.deleteAllByEmailNotIn(setOf(testUserAccount.email, superUserAccount.email))
         }
     }
 

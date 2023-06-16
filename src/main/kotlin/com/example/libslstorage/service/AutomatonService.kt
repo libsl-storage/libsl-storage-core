@@ -22,18 +22,18 @@ class AutomatonService(
 
     private fun automatonResolver(
         automatons: Map<Automaton, AutomatonEntity>
-    ): (AutomatonReference) -> AutomatonEntity? = { ref ->
+    ): (AutomatonReference) -> Pair<Automaton, AutomatonEntity>? = { ref ->
         automatons.entries
             .find { ref.isReferenceMatchWithNode(it.key) }
-            ?.value
+            ?.toPair()
     }
 
     private fun automatonStateResolver(
-        states: Map<State, AutomatonStateEntity>
-    ): (AutomatonStateReference) -> AutomatonStateEntity? = { ref ->
-        states.entries
+        states: Map<Automaton, Map<State, AutomatonStateEntity>>
+    ): (AutomatonStateReference, Automaton) -> Pair<State, AutomatonStateEntity>? = { ref, automaton ->
+        states.getValue(automaton).entries
             .find { ref.isReferenceMatchWithNode(it.key) }
-            ?.value
+            ?.toPair()
     }
 
     fun create(
@@ -48,6 +48,7 @@ class AutomatonService(
 
         val statesByAutomaton = automatons.entries.associate { (lslAutomaton, automatonEntity) ->
             val states = lslAutomaton.states.associateWith {
+                it.automaton = lslAutomaton
                 automatonStateService.create(it, automatonEntity)
             }
             lslAutomaton to states
@@ -61,7 +62,7 @@ class AutomatonService(
                     lslFunction,
                     automatonEntity,
                     automatonResolver(automatons),
-                    automatonStateResolver(states)
+                    automatonStateResolver(statesByAutomaton)
                 )
             }
 

@@ -16,11 +16,18 @@ class SpecificationErrorService(
     private fun LslError.toEntity(specification: SpecificationEntity) =
         SpecificationErrorEntity(text, position.first, position.second, specification)
 
-    fun create(
+    fun createByLslErrors(
         lslErrors: List<LslError>,
         specification: SpecificationEntity
     ): List<SpecificationErrorEntity> {
         val errors = lslErrors.map { it.toEntity(specification) }
+        return specificationErrorRepository.saveAll(errors)
+    }
+
+    fun create(
+        errors: List<SpecificationErrorEntity>,
+        specification: SpecificationEntity
+    ): List<SpecificationErrorEntity> {
         return specificationErrorRepository.saveAll(errors)
     }
 
