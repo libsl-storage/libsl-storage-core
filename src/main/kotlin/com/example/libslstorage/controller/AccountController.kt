@@ -32,6 +32,7 @@ class AccountController(
         summary = "Register new account",
         description = "Register account with specified name, email and password",
         responses = [
+            ApiResponse(responseCode = "201", description = "Created, sets cookies authFlag, accessToken, refreshToken"),
             ApiResponse(responseCode = "400", description = "Specified email already taken")
         ]
     )
