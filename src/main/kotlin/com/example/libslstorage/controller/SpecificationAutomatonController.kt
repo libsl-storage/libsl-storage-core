@@ -92,11 +92,11 @@ class SpecificationAutomatonController(
                 )
 
                 state.shifts.forEach { shift ->
-                    edges.add(
-                        EdgeDTO(
-                            EdgeDataDTO(shift.startState.id!!, shift.endState.id!!)
-                        )
+                    val edge = EdgeDTO(
+                        EdgeDataDTO(shift.startState.id!!, shift.endState.id!!)
                     )
+                    edges.add(edge)
+                    generalEdges.add(edge)
                     shift.functions.forEach { function ->
                         function.automatonCalls.forEach { call ->
                             generalEdges.add(
