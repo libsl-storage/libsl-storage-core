@@ -7,9 +7,9 @@ enum class TagGroup(
     @get:JsonValue val key: String,
     val title: String
 ) {
-    LIBRARY("libraries", "Library"),
-    VERSION("versions", "Version"),
-    LANGUAGE("languages", "Language"),
+    LIBRARY("libraries", "Libraries"),
+    VERSION("versions", "Versions"),
+    LANGUAGE("languages", "Languages"),
     URL("url", "Links"),
     OTHER("other", "Tags");
 

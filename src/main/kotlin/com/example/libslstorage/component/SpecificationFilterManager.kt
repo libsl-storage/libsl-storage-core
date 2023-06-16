@@ -30,21 +30,21 @@ abstract class TagFilterHandler(
 @Component
 class PathFilterHandler : SpecificationFilterHandler("path", "Path") {
     override fun handle(value: String): Predicate {
-        return QSpecificationEntity.specificationEntity.path.eq("%$value%")
+        return QSpecificationEntity.specificationEntity.path.like("%$value%")
     }
 }
 
 @Component
 class OwnerFilterHandler : SpecificationFilterHandler("owner", "Owner") {
     override fun handle(value: String): Predicate {
-        return QSpecificationEntity.specificationEntity.owner.name.eq("%$value%")
+        return QSpecificationEntity.specificationEntity.owner.name.like("%$value%")
     }
 }
 
 @Component
-class NameFilterHandler : SpecificationFilterHandler("name", "File name") {
+class NameFilterHandler : SpecificationFilterHandler("name", "Specification name") {
     override fun handle(value: String): Predicate {
-        return QSpecificationEntity.specificationEntity.name.eq("%$value%")
+        return QSpecificationEntity.specificationEntity.name.like("%$value%")
     }
 }
 
@@ -72,9 +72,6 @@ class SpecificationFilterManager(
 
     fun handle(filter: SpecificationFilterRequest): Predicate? {
         if (filter.value.isBlank()) return null
-        handlers.forEach { handler ->
-            if (handler.isSupport(filter.key)) handler.handle(filter.value)
-        }
-        return null
+        return handlers.find { it.isSupport(filter.key) }?.handle(filter.value)
     }
 }

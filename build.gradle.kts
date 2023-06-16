@@ -52,7 +52,7 @@ dependencies {
 
     // ORM
     implementation("org.hibernate:hibernate-core:6.2.2.Final")
-    implementation("com.querydsl:querydsl-jpa:5.0.0")
+    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
     kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
 
     // DB

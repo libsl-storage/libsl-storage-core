@@ -24,7 +24,7 @@ class SpecificationPageController(
         summary = "Get specification filters",
         description = "Get titles and keys of available specification page filters"
     )
-    @GetMapping("/page/filters")
+    @GetMapping("/filters")
     fun getAvailableFilters(): FilterResponse {
         val filters = specificationFilterService.getAvailableFilters()
             .map { FilterDto(it.key, it.value) }
@@ -35,7 +35,7 @@ class SpecificationPageController(
         summary = "Get specification page",
         description = "Get specification page by specified number and filters"
     )
-    @PostMapping("/page")
+    @PostMapping
     fun pageSpecification(
         @RequestBody pageRequest: SpecificationPageRequest
     ): Page<SpecificationDTO> {
