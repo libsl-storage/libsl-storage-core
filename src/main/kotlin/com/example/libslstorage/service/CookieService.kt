@@ -41,7 +41,7 @@ class CookieService(
     }
 
     fun createAuthFlagCookie(): Cookie {
-        val cookie = Cookie(AUTH_FLAG_COOKIE_NAME, "")
+        val cookie = Cookie(AUTH_FLAG_COOKIE_NAME, null)
         cookie.path = "/"
         cookie.maxAge = refreshTokenMaxAge
         return cookie
@@ -51,6 +51,25 @@ class CookieService(
         val accessTokenCookie = createAccessTokenCookie(account)
         val refreshTokenCookie = createRefreshTokenCookie(account)
         val authFlagCookie = createAuthFlagCookie()
+        return listOf(accessTokenCookie, refreshTokenCookie, authFlagCookie)
+    }
+
+    fun deleteAuthCookies(): List<Cookie> {
+        val accessTokenCookie = Cookie(ACCESS_TOKEN_COOKIE_NAME, null)
+            .also {
+                it.maxAge = 0
+                it.path = "/"
+            }
+        val refreshTokenCookie = Cookie(REFRESH_TOKEN_COOKIE_NAME, null)
+            .also {
+                it.maxAge = 0
+                it.path = "/"
+            }
+        val authFlagCookie = Cookie(AUTH_FLAG_COOKIE_NAME, null)
+            .also {
+                it.maxAge = 0
+                it.path = "/"
+            }
         return listOf(accessTokenCookie, refreshTokenCookie, authFlagCookie)
     }
 }
