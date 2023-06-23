@@ -1,3 +1,22 @@
+spring:
+    security:
+        oauth2:
+            client:
+                registration:
+                    google:
+                        clientId: ${GOOGLE_CLIENT_ID}
+                        clientSecret: ${GOOGLE_CLIENT_SECRET}
+#                        scope:
+#                            - openid
+#                            - profile
+#                            - email
+#                    github:
+#                        clientId: ${GITHUB_CLIENT_ID}
+#                        clientSecret: ${GITHUB-CLIENT-SECRET}
+#            resourceserver:
+#                jwt:
+#                    issuer-uri: https://accounts.google.com
+#                    jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
 server:
     error:
         include-message: always
@@ -8,6 +27,9 @@ security:
     key: ${SECURITY_KEY}
     accessTokenMaxAge: 1200                 # 20 minutes in seconds
     refreshTokenMaxAge: 604800              # 7 days in seconds
+    oauthCookieMaxAge: 604800
+    authCookieMaxAge: 604800
+    redirectUrls: ${REDIRECT_URLS}
 superuser:
     name: ${SUPERUSER_NAME}
     email: ${SUPERUSER_EMAIL}

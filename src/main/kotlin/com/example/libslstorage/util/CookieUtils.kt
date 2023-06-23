@@ -2,16 +2,36 @@ package com.example.libslstorage.util
 
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 
 const val ACCESS_TOKEN_COOKIE_NAME = "accessToken"
 const val REFRESH_TOKEN_COOKIE_NAME = "refreshToken"
 const val AUTH_FLAG_COOKIE_NAME = "authFlag"
+const val OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2AuthRequest"
+const val REDIRECT_URI_COOKIE_NAME = "redirectUri"
 
-fun HttpServletRequest.getAccessTokenCookie(): Cookie? =
-    cookies?.find { it.name == ACCESS_TOKEN_COOKIE_NAME }
+fun HttpServletRequest.findCookie(name: String): Cookie? =
+    cookies?.find { it.name == name }
 
-fun HttpServletRequest.getRefreshTokenCookie(): Cookie? =
-    cookies?.find { it.name == REFRESH_TOKEN_COOKIE_NAME }
+fun HttpServletResponse.addCookie(
+    name: String,
+    value: String?,
+    maxAge: Int,
+    isHttpOnly: Boolean
+) {
+    val cookie = Cookie(name, value)
+    cookie.maxAge = maxAge
+    cookie.isHttpOnly = isHttpOnly
+    cookie.path = "/"
+    addCookie(cookie)
+}
 
-fun HttpServletRequest.getAuthFlagCookie(): Cookie? =
-    cookies?.find { it.name == AUTH_FLAG_COOKIE_NAME }
+fun HttpServletResponse.deleteCookie(request: HttpServletRequest, name: String) =
+    request.findCookie(name)
+        ?.apply {
+            maxAge = 0
+            path = "/"
+            value = ""
+        }?.let {
+            addCookie(it)
+        }

@@ -1,7 +1,10 @@
 package com.example.libslstorage.configuration
 
+import com.example.libslstorage.component.CookieAuthorizationRequestRepository
 import com.example.libslstorage.component.JwtAuthenticationEntryPoint
 import com.example.libslstorage.component.JwtAuthenticationFilter
+import com.example.libslstorage.component.OAuth2AuthenticationFailureHandler
+import com.example.libslstorage.component.OAuth2AuthenticationSuccessHandler
 import com.example.libslstorage.service.AccountDetailService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -23,7 +26,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfig(
     private val accountDetailService: AccountDetailService,
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint
+    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
+    private val cookieAuthorizationRequestRepository: CookieAuthorizationRequestRepository,
+    private val oauth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler,
+    private val oauth2AuthenticationFailureHandler: OAuth2AuthenticationFailureHandler
 ) {
 
     @Bean
@@ -64,6 +70,16 @@ class SecurityConfig(
 
         http.exceptionHandling { config ->
             config.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+        }
+
+        http.oauth2Login { config ->
+            config.authorizationEndpoint {
+                it.baseUri("/oauth2/authorize")
+                it.authorizationRequestRepository(cookieAuthorizationRequestRepository)
+            }
+            config.redirectionEndpoint().baseUri("/oauth2/callback")
+            config.successHandler(oauth2AuthenticationSuccessHandler)
+            config.failureHandler(oauth2AuthenticationFailureHandler)
         }
 
         http.formLogin().disable()

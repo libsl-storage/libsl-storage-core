@@ -1,7 +1,8 @@
 package com.example.libslstorage.component
 
 import com.example.libslstorage.service.TokenService
-import com.example.libslstorage.util.getAccessTokenCookie
+import com.example.libslstorage.util.ACCESS_TOKEN_COOKIE_NAME
+import com.example.libslstorage.util.findCookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.core.AuthenticationException
@@ -19,7 +20,7 @@ class JwtAuthenticationEntryPoint(
         authException: AuthenticationException
     ) {
         try {
-            request.getAccessTokenCookie()
+            request.findCookie(ACCESS_TOKEN_COOKIE_NAME)
                 ?.value
                 ?.let { tokenService.decodeToken(it) }
         } catch (e: JwtValidationException) {
