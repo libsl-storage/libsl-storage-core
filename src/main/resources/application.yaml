@@ -8,6 +8,7 @@ security:
     key: ${SECURITY_KEY}
     accessTokenMaxAge: 1200                 # 20 minutes in seconds
     refreshTokenMaxAge: 604800              # 7 days in seconds
+    authCookieMaxAge: 604800
 superuser:
     name: ${SUPERUSER_NAME}
     email: ${SUPERUSER_EMAIL}

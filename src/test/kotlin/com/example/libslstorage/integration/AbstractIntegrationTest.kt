@@ -37,7 +37,4 @@ abstract class AbstractIntegrationTest {
 
     @Autowired
     lateinit var superUserAccount: AccountEntity
-
-    fun createAccessToken(account: AccountEntity): String =
-        tokenService.createToken(account, 604800)
 }

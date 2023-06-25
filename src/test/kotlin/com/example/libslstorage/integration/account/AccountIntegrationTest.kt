@@ -105,7 +105,7 @@ class AccountIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Should return authenticated account info`() {
-        val accessToken = createAccessToken(testUserAccount)
+        val accessToken = tokenService.createAccessToken(testUserAccount)
         webTestClient.get()
             .uri("/account")
             .cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken)

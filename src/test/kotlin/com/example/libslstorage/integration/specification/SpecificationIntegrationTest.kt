@@ -30,7 +30,7 @@ class SpecificationIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Create empty specification in root`() {
         val request = CreateSpecificationRequest("test", "", null)
-        val accessToken = createAccessToken(testUserAccount)
+        val accessToken = tokenService.createAccessToken(testUserAccount)
         webTestClient.post()
             .uri("/specification")
             .cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken)
@@ -52,7 +52,7 @@ class SpecificationIntegrationTest : AbstractIntegrationTest() {
             DirectoryEntity("test_dir", testUserAccount, null)
         )
         val request = CreateSpecificationRequest("test", "", directory.id!!)
-        val accessToken = createAccessToken(testUserAccount)
+        val accessToken = tokenService.createAccessToken(testUserAccount)
         webTestClient.post()
             .uri("/specification")
             .cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken)
@@ -74,7 +74,7 @@ class SpecificationIntegrationTest : AbstractIntegrationTest() {
             DirectoryEntity("test_dir", superUserAccount, null)
         )
         val request = CreateSpecificationRequest("test", "", directory.id!!)
-        val accessToken = createAccessToken(testUserAccount)
+        val accessToken = tokenService.createAccessToken(testUserAccount)
         webTestClient.post()
             .uri("/specification")
             .cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken)
@@ -88,7 +88,7 @@ class SpecificationIntegrationTest : AbstractIntegrationTest() {
     fun `Should create simple specification`() {
         val file = resourceLoader.getResource("classpath:lsl/simple.lsl")
         val request = CreateSpecificationRequest(file.file.nameWithoutExtension, "", null)
-        val accessToken = createAccessToken(testUserAccount)
+        val accessToken = tokenService.createAccessToken(testUserAccount)
         val specification = webTestClient.post()
             .uri("/specification")
             .cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken)
@@ -159,7 +159,7 @@ class SpecificationIntegrationTest : AbstractIntegrationTest() {
     fun `Should create specification with errors`() {
         val file = resourceLoader.getResource("classpath:lsl/error.lsl")
         val request = CreateSpecificationRequest(file.file.nameWithoutExtension, "", null)
-        val accessToken = createAccessToken(testUserAccount)
+        val accessToken = tokenService.createAccessToken(testUserAccount)
         val specification = webTestClient.post()
             .uri("/specification")
             .cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken)

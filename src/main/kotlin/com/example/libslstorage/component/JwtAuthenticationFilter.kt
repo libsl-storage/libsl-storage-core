@@ -2,7 +2,8 @@ package com.example.libslstorage.component
 
 import com.example.libslstorage.service.AccountDetailService
 import com.example.libslstorage.service.TokenService
-import com.example.libslstorage.util.getAccessTokenCookie
+import com.example.libslstorage.util.ACCESS_TOKEN_COOKIE_NAME
+import com.example.libslstorage.util.findCookie
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -24,7 +25,7 @@ class JwtAuthenticationFilter(
         filterChain: FilterChain
     ) {
         try {
-            val accessToken = request.getAccessTokenCookie()?.value
+            val accessToken = request.findCookie(ACCESS_TOKEN_COOKIE_NAME)?.value
             if (accessToken != null) {
                 val email = tokenService.decodeToken(accessToken).subject
                 val account = accountDetailService.loadUserByUsername(email)

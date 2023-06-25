@@ -28,7 +28,7 @@ class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
     fun `Check allowed filters`() {
         webTestClient.get()
             .uri("/specification/page/filters")
-            .cookie(ACCESS_TOKEN_COOKIE_NAME, createAccessToken(testUserAccount))
+            .cookie(ACCESS_TOKEN_COOKIE_NAME, tokenService.createAccessToken(testUserAccount))
             .exchange()
             .expectStatus()
             .isOk
@@ -81,7 +81,7 @@ class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
             )
         )
 
-        val spec1Tags = tagRepository.saveAll(
+        tagRepository.saveAll(
             listOf(
                 TagEntity(
                     name = "lib1",
@@ -95,7 +95,7 @@ class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
                 )
             )
         )
-        val spec2Tags = tagRepository.saveAll(
+        tagRepository.saveAll(
             listOf(
                 TagEntity(
                     name = "lib2",
@@ -114,7 +114,7 @@ class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
                 )
             )
         )
-        val spec3Tags = tagRepository.saveAll(
+        tagRepository.saveAll(
             listOf(
                 TagEntity(
                     name = "lib1",
@@ -135,7 +135,7 @@ class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
         )
         webTestClient.post()
             .uri("/specification/page")
-            .cookie(ACCESS_TOKEN_COOKIE_NAME, createAccessToken(testUserAccount))
+            .cookie(ACCESS_TOKEN_COOKIE_NAME, tokenService.createAccessToken(testUserAccount))
             .bodyValue(request)
             .exchange()
             .expectStatus()
@@ -143,11 +143,15 @@ class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
             .expectBody()
             .jsonPath("$.content.length()")
             .isEqualTo(2)
+            .jsonPath("$.content[?(@.name=='spec1')]")
+            .exists()
+            .jsonPath("$.content[?(@.name=='spec2')]")
+            .exists()
     }
 
     @Test
     fun `Filter by name`() {
-        val spec1 = specificationRepository.save(
+        specificationRepository.save(
             SpecificationEntity(
                 name = "spec1",
                 description = "",
@@ -156,7 +160,7 @@ class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
                 owner = testUserAccount,
             )
         )
-        val spec12 = specificationRepository.save(
+        specificationRepository.save(
             SpecificationEntity(
                 name = "spec12",
                 description = "",
@@ -165,7 +169,7 @@ class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
                 owner = testUserAccount,
             )
         )
-        val spec3 = specificationRepository.save(
+        specificationRepository.save(
             SpecificationEntity(
                 name = "spec3",
                 description = "",
@@ -181,7 +185,7 @@ class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
         )
         webTestClient.post()
             .uri("/specification/page")
-            .cookie(ACCESS_TOKEN_COOKIE_NAME, createAccessToken(testUserAccount))
+            .cookie(ACCESS_TOKEN_COOKIE_NAME, tokenService.createAccessToken(testUserAccount))
             .bodyValue(request)
             .exchange()
             .expectStatus()
@@ -189,5 +193,9 @@ class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
             .expectBody()
             .jsonPath("$.content.length()")
             .isEqualTo(2)
+            .jsonPath("$.content[?(@.name=='spec1')]")
+            .exists()
+            .jsonPath("$.content[?(@.name=='spec12')]")
+            .exists()
     }
 }
