@@ -1,13 +1,13 @@
 package com.example.libslstorage.controller
 
-import com.example.libslstorage.entity.AccountEntity
 import com.example.libslstorage.service.AuthenticationService
-import com.example.libslstorage.service.CookieService
 import com.example.libslstorage.util.REFRESH_TOKEN_COOKIE_NAME
 import com.example.libslstorage.dto.LoginRequest
+import com.example.libslstorage.service.AuthService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.web.bind.annotation.CookieValue
 import org.springframework.web.bind.annotation.PostMapping
@@ -18,17 +18,9 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/auth")
 class AuthenticationController(
-    private val cookieService: CookieService,
-    private val authenticationService: AuthenticationService
+    private val authenticationService: AuthenticationService,
+    private val authService: AuthService
 ) {
-
-    private fun createAuthCookies(account: AccountEntity, response: HttpServletResponse) {
-        cookieService.createAuthCookies(account).forEach { response.addCookie(it) }
-    }
-
-    private fun deleteAuthCookies(response: HttpServletResponse) {
-        cookieService.deleteAuthCookies().forEach { response.addCookie(it) }
-    }
 
     @Operation(
         summary = "Authenticate user",
@@ -44,7 +36,7 @@ class AuthenticationController(
             request.email,
             request.password
         )
-        createAuthCookies(account, response)
+        authService.createAuthCookies(account, response)
     }
 
     @Operation(
@@ -58,7 +50,7 @@ class AuthenticationController(
         response: HttpServletResponse
     ) {
         val account = authenticationService.authenticateByJwt(refreshToken)
-        createAuthCookies(account, response)
+        authService.createAuthCookies(account, response)
     }
 
     @Operation(
@@ -71,8 +63,9 @@ class AuthenticationController(
     )
     @PostMapping("/logout")
     fun logout(
+        request: HttpServletRequest,
         response: HttpServletResponse
     ) {
-        deleteAuthCookies(response)
+        authService.deleteAuthCookies(request, response)
     }
 }

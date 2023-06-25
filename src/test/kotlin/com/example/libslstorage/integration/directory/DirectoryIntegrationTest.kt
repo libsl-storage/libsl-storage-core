@@ -27,7 +27,7 @@ class DirectoryIntegrationTest : AbstractIntegrationTest() {
     @Test
     fun `Should create directory`() {
         val request = CreateDirectoryRequest("test")
-        val accessToken = createAccessToken(testUserAccount)
+        val accessToken = tokenService.createAccessToken(testUserAccount)
         webTestClient.post()
             .uri("/directory")
             .cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken)
@@ -55,7 +55,7 @@ class DirectoryIntegrationTest : AbstractIntegrationTest() {
             DirectoryEntity("test1", testUserAccount, null)
         )
         val request = CreateDirectoryRequest("test2", parent.id)
-        val accessToken = createAccessToken(testUserAccount)
+        val accessToken = tokenService.createAccessToken(testUserAccount)
         webTestClient.post()
             .uri("/directory")
             .cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken)
@@ -83,7 +83,7 @@ class DirectoryIntegrationTest : AbstractIntegrationTest() {
             DirectoryEntity("test1", superUserAccount, null)
         )
         val request = CreateDirectoryRequest("test2", parent.id)
-        val accessToken = createAccessToken(testUserAccount)
+        val accessToken = tokenService.createAccessToken(testUserAccount)
         webTestClient.post()
             .uri("/directory")
             .cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken)

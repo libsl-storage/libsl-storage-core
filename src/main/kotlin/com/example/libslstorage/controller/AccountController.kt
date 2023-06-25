@@ -8,7 +8,7 @@ import com.example.libslstorage.dto.account.UpdateAccountPasswordRequest
 import com.example.libslstorage.dto.account.UpdateAccountRequest
 import com.example.libslstorage.entity.RoleEntity
 import com.example.libslstorage.enums.UserRole
-import com.example.libslstorage.service.CookieService
+import com.example.libslstorage.service.AuthService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*
 class AccountController(
     private val roleHolder: Map<UserRole, RoleEntity>,
     private val accountService: AccountService,
-    private val cookieService: CookieService
+    private val authService: AuthService
 ) {
 
     private fun AccountEntity.toResponse() = AccountResponse(id!!, email, name)
@@ -32,7 +32,10 @@ class AccountController(
         summary = "Register new account",
         description = "Register account with specified name, email and password",
         responses = [
-            ApiResponse(responseCode = "201", description = "Created, sets cookies authFlag, accessToken, refreshToken"),
+            ApiResponse(
+                responseCode = "201",
+                description = "Created, sets cookies authFlag, accessToken, refreshToken"
+            ),
             ApiResponse(responseCode = "400", description = "Specified email already taken")
         ]
     )
@@ -44,7 +47,7 @@ class AccountController(
     ): AccountResponse {
         val commonRole = roleHolder.getValue(UserRole.COMMON)
         val account = accountService.create(createRequest, setOf(commonRole))
-        cookieService.createAuthCookies(account).forEach { response.addCookie(it) }
+        authService.createAuthCookies(account, response)
         return account.toResponse()
     }
 
