@@ -28,7 +28,10 @@ class AutomatonEntity(
     var specification: SpecificationEntity,
 
     @OneToMany(mappedBy = "automaton")
-    var states: List<AutomatonStateEntity> = emptyList(),
+    var states: MutableSet<AutomatonStateEntity> = mutableSetOf(),
+
+    @OneToMany(mappedBy = "automaton")
+    var functions: MutableSet<AutomatonFunctionEntity> = mutableSetOf(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

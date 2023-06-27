@@ -32,7 +32,7 @@ class AutomatonStateEntity(
     val automaton: AutomatonEntity,
 
     @OneToMany(mappedBy = "startState")
-    val shifts: MutableList<AutomatonShiftEntity> = mutableListOf(),
+    val shifts: MutableSet<AutomatonShiftEntity> = mutableSetOf(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

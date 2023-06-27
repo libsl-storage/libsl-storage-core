@@ -25,10 +25,10 @@ class AutomatonFunctionEntity(
     var automaton: AutomatonEntity,
 
     @OneToMany(mappedBy = "function")
-    var automatonCalls: List<AutomatonCallEntity> = emptyList(),
+    var automatonCalls: MutableSet<AutomatonCallEntity> = mutableSetOf(),
 
     @OneToMany(mappedBy = "function")
-    var arguments: List<AutomatonFunctionArgumentEntity> = emptyList(),
+    var arguments: MutableSet<AutomatonFunctionArgumentEntity> = mutableSetOf(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

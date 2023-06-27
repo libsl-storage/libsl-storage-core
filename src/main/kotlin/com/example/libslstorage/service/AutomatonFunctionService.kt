@@ -50,4 +50,12 @@ class AutomatonFunctionService(
 
         return function
     }
+
+    fun delete(functions: Set<AutomatonFunctionEntity>) {
+        functions.forEach {
+            automatonCallService.delete(it.automatonCalls)
+            automatonFunctionArgumentService.delete(it.arguments)
+        }
+        automatonFunctionRepository.deleteAll(functions)
+    }
 }

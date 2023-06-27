@@ -24,4 +24,8 @@ class AutomatonFunctionArgumentService(
             )
         )
     }
+
+    fun delete(arguments: Set<AutomatonFunctionArgumentEntity>) {
+        automatonFunctionArgumentRepository.deleteAll(arguments)
+    }
 }

@@ -10,7 +10,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional
 class AutomatonStateService(
-    private val automatonStateRepository: AutomatonStateRepository
+    private val automatonStateRepository: AutomatonStateRepository,
+    private val automatonShiftService: AutomatonShiftService
 ) {
     fun create(
         libslState: State,
@@ -19,5 +20,10 @@ class AutomatonStateService(
         return automatonStateRepository.save(
             AutomatonStateEntity(libslState.name, libslState.kind, automaton)
         )
+    }
+
+    fun delete(states: Set<AutomatonStateEntity>) {
+        states.forEach { automatonShiftService.delete(it.shifts) }
+        automatonStateRepository.deleteAll(states)
     }
 }
