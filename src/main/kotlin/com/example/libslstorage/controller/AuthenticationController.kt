@@ -3,13 +3,14 @@ package com.example.libslstorage.controller
 import com.example.libslstorage.service.AuthenticationService
 import com.example.libslstorage.util.REFRESH_TOKEN_COOKIE_NAME
 import com.example.libslstorage.dto.LoginRequest
+import com.example.libslstorage.exception.NoRefreshTokenException
 import com.example.libslstorage.service.AuthService
+import com.example.libslstorage.util.findCookie
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.web.bind.annotation.CookieValue
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -46,9 +47,12 @@ class AuthenticationController(
     )
     @PostMapping("/refresh")
     fun refresh(
-        @CookieValue(name = REFRESH_TOKEN_COOKIE_NAME) refreshToken: String,
+        request: HttpServletRequest,
         response: HttpServletResponse
     ) {
+        val refreshToken = request.findCookie(REFRESH_TOKEN_COOKIE_NAME)
+            ?.value
+            ?: throw NoRefreshTokenException()
         val account = authenticationService.authenticateByJwt(refreshToken)
         authService.createAuthCookies(account, response)
     }

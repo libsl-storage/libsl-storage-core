@@ -1,6 +1,7 @@
 package com.example.libslstorage.controller
 
 import com.example.libslstorage.dto.specification.CreateSpecificationRequest
+import com.example.libslstorage.dto.specification.SpecificationPermissionsResponse
 import com.example.libslstorage.dto.specification.SpecificationResponse
 import com.example.libslstorage.dto.specification.UpdateSpecificationRequest
 import com.example.libslstorage.entity.AccountEntity
@@ -46,6 +47,24 @@ class SpecificationController(
     @GetMapping("/{id}")
     fun getSpecificationById(@PathVariable id: Long): SpecificationResponse {
         return specificationService.findById(id).toResponse()
+    }
+
+    @Operation(
+        summary = "Get specification permissions",
+        description = "Get specification permissions",
+        responses = [ApiResponse(responseCode = "200", description = "OK")]
+    )
+    @GetMapping("/{id}/permissions")
+    fun getSpecificationPermissions(
+        @PathVariable id: Long,
+        @AuthenticationPrincipal currentUser: AccountEntity?
+    ): SpecificationPermissionsResponse {
+        val specification = specificationService.findById(id)
+        val permissions = specificationService.getSpecificationPermissions(
+            specification,
+            currentUser
+        )
+        return SpecificationPermissionsResponse(permissions)
     }
 
     @Operation(
