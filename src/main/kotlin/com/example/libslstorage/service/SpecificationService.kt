@@ -144,6 +144,7 @@ class SpecificationService(
 
     fun delete(id: Long, currentUser: AccountEntity) {
         val specification = findByIdWithAccessCheck(id, currentUser)
+        automatonService.delete(specification.automatons)
         specificationRepository.delete(specification)
     }
 }

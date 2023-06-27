@@ -35,7 +35,7 @@ class SpecificationErrorService(
         return specificationErrorRepository.findAllBySpecificationId(specificationId)
     }
 
-    fun delete(errors: List<SpecificationErrorEntity>) {
+    fun delete(errors: Set<SpecificationErrorEntity>) {
         specificationErrorRepository.deleteAll(errors)
     }
 }

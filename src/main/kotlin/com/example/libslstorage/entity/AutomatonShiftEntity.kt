@@ -25,10 +25,10 @@ class AutomatonShiftEntity(
     @ManyToMany
     @JoinTable(
         name = "automaton_shift_function",
-        joinColumns = [ JoinColumn(name = "shift_id") ],
-        inverseJoinColumns = [ JoinColumn(name = "function_id") ]
+        joinColumns = [JoinColumn(name = "shift_id")],
+        inverseJoinColumns = [JoinColumn(name = "function_id")]
     )
-    var functions: List<AutomatonFunctionEntity> = emptyList(),
+    var functions: MutableSet<AutomatonFunctionEntity> = mutableSetOf(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

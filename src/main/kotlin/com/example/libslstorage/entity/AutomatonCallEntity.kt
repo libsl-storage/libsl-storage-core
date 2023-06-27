@@ -44,6 +44,7 @@ class AutomatonCallEntity(
     @MapsId("init_state_id")
     @ManyToOne
     @JoinColumn(name = "init_state_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     val initState: AutomatonStateEntity
 ) {
     @EmbeddedId

@@ -39,13 +39,13 @@ class SpecificationEntity(
     var content: String? = null,
 
     @OneToMany(mappedBy = "specification")
-    var errors: List<SpecificationErrorEntity> = emptyList(),
+    var errors: MutableSet<SpecificationErrorEntity> = mutableSetOf(),
 
     @OneToMany(mappedBy = "specification")
-    var tags: List<TagEntity> = emptyList(),
+    var tags: MutableSet<TagEntity> = mutableSetOf(),
 
     @OneToMany(mappedBy = "specification")
-    var automatons: List<AutomatonEntity> = emptyList(),
+    var automatons: MutableSet<AutomatonEntity> = mutableSetOf(),
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

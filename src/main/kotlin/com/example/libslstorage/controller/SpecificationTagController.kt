@@ -29,7 +29,7 @@ class SpecificationTagController(
     private val tagService: TagService,
 ) {
 
-    fun List<TagEntity>.toResponse(): TagResponse {
+    fun Collection<TagEntity>.toResponse(): TagResponse {
         val tagGroups = groupBy { it.group.name }
             .map { (group, tag) ->
                 TagGroupDTO(group, tag.map { TagDTO(it.id!!, it.name) })

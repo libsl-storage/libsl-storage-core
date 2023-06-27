@@ -83,7 +83,11 @@ class AutomatonService(
         return automatonRepository.findAllBySpecificationId(specificationId)
     }
 
-    fun delete(automatons: List<AutomatonEntity>) {
+    fun delete(automatons: Set<AutomatonEntity>) {
+        automatons.forEach {
+            automatonStateService.delete(it.states)
+            automatonFunctionService.delete(it.functions)
+        }
         automatonRepository.deleteAll(automatons)
     }
 }

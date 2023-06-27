@@ -22,4 +22,8 @@ class AutomatonCallService(
             AutomatonCallEntity(function, automaton, initState)
         )
     }
+
+    fun delete(automatonCalls: Set<AutomatonCallEntity>) {
+        automatonCallRepository.deleteAll(automatonCalls)
+    }
 }

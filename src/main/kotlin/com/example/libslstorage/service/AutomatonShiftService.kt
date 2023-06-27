@@ -17,6 +17,13 @@ class AutomatonShiftService(
         end: AutomatonStateEntity,
         functions: List<AutomatonFunctionEntity>
     ): AutomatonShiftEntity {
-        return automatonShiftRepository.save(AutomatonShiftEntity(start, end, functions))
+        val shift = AutomatonShiftEntity(start, end, functions.toMutableSet())
+        return automatonShiftRepository.save(shift)
+    }
+
+    fun delete(shifts: Set<AutomatonShiftEntity>) {
+        shifts.forEach { it.functions = mutableSetOf() }
+        automatonShiftRepository.saveAll(shifts)
+        automatonShiftRepository.deleteAll(shifts)
     }
 }
