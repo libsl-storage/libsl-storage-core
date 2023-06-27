@@ -4,6 +4,7 @@ import com.example.libslstorage.dto.specification.CreateSpecificationRequest
 import com.example.libslstorage.dto.specification.UpdateSpecificationRequest
 import com.example.libslstorage.entity.AccountEntity
 import com.example.libslstorage.entity.SpecificationEntity
+import com.example.libslstorage.enums.SpecificationPermission
 import com.example.libslstorage.enums.UserRole
 import com.example.libslstorage.exception.SPECIFICATION_ACCESS_DENIED_ERROR_MESSAGE
 import com.example.libslstorage.exception.SpecificationAlreadyExistsException
@@ -146,5 +147,15 @@ class SpecificationService(
         val specification = findByIdWithAccessCheck(id, currentUser)
         automatonService.delete(specification.automatons)
         specificationRepository.delete(specification)
+    }
+
+    fun getSpecificationPermissions(
+        specification: SpecificationEntity,
+        currentUser: AccountEntity?
+    ): Set<SpecificationPermission> {
+        return if (currentUser == null) return emptySet()
+        else if (specification.owner.id == currentUser.id || currentUser.roles.any { it.name == UserRole.SUPER })
+            setOf(SpecificationPermission.EDIT, SpecificationPermission.REMOVE)
+        else setOf()
     }
 }
