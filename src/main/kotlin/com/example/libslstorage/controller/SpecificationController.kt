@@ -4,6 +4,7 @@ import com.example.libslstorage.dto.specification.CreateSpecificationRequest
 import com.example.libslstorage.dto.specification.SpecificationPermissionsResponse
 import com.example.libslstorage.dto.specification.SpecificationResponse
 import com.example.libslstorage.dto.specification.UpdateSpecificationRequest
+import com.example.libslstorage.dto.tag.TagDTO
 import com.example.libslstorage.entity.AccountEntity
 import com.example.libslstorage.entity.SpecificationEntity
 import com.example.libslstorage.exception.SpecificationContentNotFoundException
@@ -34,7 +35,18 @@ class SpecificationController(
 ) {
 
     private fun SpecificationEntity.toResponse(): SpecificationResponse =
-        SpecificationResponse(id!!, name, description, path)
+        SpecificationResponse(
+            id!!,
+            name,
+            description,
+            path,
+            libslVersion,
+            libraryName,
+            libraryVersion,
+            libraryLanguage,
+            libraryUrl,
+            tags.map { TagDTO(it.id!!, it.name) }
+        )
 
     @Operation(
         summary = "Get specification",
@@ -140,8 +152,8 @@ class SpecificationController(
         @PathVariable id: Long,
         @RequestBody lslFile: MultipartFile,
         @AuthenticationPrincipal currentUser: AccountEntity
-    ) {
-        specificationService.updateLslFile(id, lslFile, currentUser).toResponse()
+    ): SpecificationResponse {
+        return specificationService.updateLslFile(id, lslFile, currentUser).toResponse()
     }
 
     @Operation(

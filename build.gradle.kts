@@ -51,7 +51,7 @@ dependencies {
     kapt("org.springframework.boot:spring-boot-configuration-processor")
 
     // ORM
-    implementation("org.hibernate:hibernate-core:6.2.2.Final")
+    implementation("org.hibernate:hibernate-core:6.2.5.Final")
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
     kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
 

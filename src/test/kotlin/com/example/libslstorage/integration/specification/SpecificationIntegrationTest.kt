@@ -6,7 +6,6 @@ import com.example.libslstorage.dto.specification.SpecificationErrorResponse
 import com.example.libslstorage.dto.specification.SpecificationResponse
 import com.example.libslstorage.dto.tag.TagResponse
 import com.example.libslstorage.entity.DirectoryEntity
-import com.example.libslstorage.enums.TagGroup
 import com.example.libslstorage.integration.AbstractIntegrationTest
 import com.example.libslstorage.repository.DirectoryRepository
 import com.example.libslstorage.service.DirectoryService
@@ -112,6 +111,15 @@ class SpecificationIntegrationTest : AbstractIntegrationTest() {
             .exchange()
             .expectStatus()
             .isOk
+            .expectBody(SpecificationResponse::class.java)
+            .value {response ->
+                assertEquals("1.0.0", response.libslVersion)
+                assertEquals("simple", response.libraryName)
+                assertEquals("1.0.0f", response.libraryVersion)
+                assertEquals("java", response.libraryLanguage)
+                assertEquals("https://github.com/vldf/", response.libraryURL)
+            }
+
 
         webTestClient.get()
             .uri("/specification/${specification?.id}/content")
@@ -139,19 +147,6 @@ class SpecificationIntegrationTest : AbstractIntegrationTest() {
             .expectBody(AutomatonResponse::class.java)
             .value {
                 assertThat(it.automatons).hasSize(2)
-            }
-
-        webTestClient.get()
-            .uri("/specification/${specification?.id}/tag")
-            .cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken)
-            .exchange()
-            .expectBody(TagResponse::class.java)
-            .value {response ->
-                assertThat(response.tagGroups).hasSize(4)
-                assertThat(response.tagGroups).anyMatch { it.key == TagGroup.LANGUAGE }
-                assertThat(response.tagGroups).anyMatch { it.key == TagGroup.VERSION }
-                assertThat(response.tagGroups).anyMatch { it.key == TagGroup.LIBRARY }
-                assertThat(response.tagGroups).anyMatch { it.key == TagGroup.URL }
             }
     }
 

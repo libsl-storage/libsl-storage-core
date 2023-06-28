@@ -3,6 +3,7 @@ package com.example.libslstorage.service
 import com.example.libslstorage.component.SpecificationFilterManager
 import com.example.libslstorage.dto.specification.SpecificationPageRequest
 import com.example.libslstorage.entity.SpecificationEntity
+import com.example.libslstorage.enums.SpecificationFilter
 import com.example.libslstorage.repository.SpecificationRepository
 import com.querydsl.core.BooleanBuilder
 import org.springframework.beans.factory.annotation.Value
@@ -19,9 +20,9 @@ class SpecificationFilterService(
 ) {
 
     @Value("\${specificationPageSize}")
-    private var pageSize = 20
+    private var pageSize = 10
 
-    fun getAvailableFilters(): Map<String, String> =
+    fun getAvailableFilters(): List<SpecificationFilter> =
         specificationFilterManager.availableHandlers
 
     fun getPage(request: SpecificationPageRequest): Page<SpecificationEntity> {

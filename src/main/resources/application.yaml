@@ -15,19 +15,18 @@ superuser:
     password: ${SUPERUSER_PASSWORD}
 libsl:
     tempDir: ./temp/lsl
-specificationPageSize: 20
+specificationPageSize: 10
 ---
 spring:
     config:
         activate:
             on-profile: dev
     datasource:
-        driver-class-name: org.h2.Driver
-        url: jdbc:h2:./temp/lsldb;AUTO_SERVER=true
-        username: user
-        password: password
+        url: jdbc:postgresql://localhost:5432/lsldb
+        username: ${DB_USERNAME}
+        password: ${DB_PASSWORD}
     jpa:
-        database-platform: org.hibernate.dialect.H2Dialect
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
         generate-ddl: true
         hibernate:
             ddl-auto: validate
@@ -35,9 +34,6 @@ spring:
             hibernate:
                 format_sql: true
     flyway:
-        url: ${spring.datasource.url}
-        user: ${spring.datasource.username}
-        password: ${spring.datasource.password}
         baseline-on-migrate: true
     h2:
         console:
@@ -51,14 +47,10 @@ spring:
         activate:
             on-profile: prod
     datasource:
-        driver-class-name: org.postgresql.Driver
         url: ${DB_URL}
         username: ${DB_USERNAME}
         password: ${DB_PASSWORD}
     flyway:
-        url: ${spring.datasource.url}
-        user: ${spring.datasource.username}
-        password: ${spring.datasource.password}
         baseline-on-migrate: true
     jpa:
         database-platform: org.hibernate.dialect.PostgreSQLDialect

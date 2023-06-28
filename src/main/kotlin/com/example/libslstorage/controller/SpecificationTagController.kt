@@ -2,7 +2,6 @@ package com.example.libslstorage.controller
 
 import com.example.libslstorage.dto.tag.CreateTagRequest
 import com.example.libslstorage.dto.tag.TagDTO
-import com.example.libslstorage.dto.tag.TagGroupDTO
 import com.example.libslstorage.dto.tag.TagResponse
 import com.example.libslstorage.entity.AccountEntity
 import com.example.libslstorage.entity.TagEntity
@@ -30,11 +29,8 @@ class SpecificationTagController(
 ) {
 
     fun Collection<TagEntity>.toResponse(): TagResponse {
-        val tagGroups = groupBy { it.group.name }
-            .map { (group, tag) ->
-                TagGroupDTO(group, tag.map { TagDTO(it.id!!, it.name) })
-            }
-        return TagResponse(tagGroups)
+        val tags = map { TagDTO(it.id!!, it.name) }
+        return TagResponse(tags)
     }
 
     @Operation(
