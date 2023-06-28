@@ -42,7 +42,18 @@ class SpecificationPageController(
         val specifications = specificationFilterService.getPage(pageRequest)
         val page = specifications.map { spec ->
             val tags = spec.tags.map { TagDTO(it.id!!, it.name) }
-            SpecificationDTO(spec.id!!, spec.name, spec.description, spec.path, tags)
+            SpecificationDTO(
+                spec.id!!,
+                spec.name,
+                spec.description,
+                spec.path,
+                spec.libslVersion,
+                spec.libraryName,
+                spec.libraryVersion,
+                spec.libraryLanguage,
+                spec.libraryUrl,
+                tags
+            )
         }
         return page
     }

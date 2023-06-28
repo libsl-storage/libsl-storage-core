@@ -7,5 +7,10 @@ data class SpecificationDTO(
     val name: String,
     val description: String,
     val path: String,
+    val libslVersion: String?,
+    val libraryName: String?,
+    val libraryVersion: String?,
+    val libraryLanguage: String?,
+    val libraryURL: String?,
     val tags: List<TagDTO>
 )
