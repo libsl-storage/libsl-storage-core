@@ -28,7 +28,7 @@ class AuthenticationController(
         description = "Authenticate user by email and password",
         responses = [
             ApiResponse(responseCode = "200", description = "OK, sets cookies authFlag, accessToken, refreshToken"),
-            ApiResponse(responseCode = "400", description = "Incorrect authentication data"),
+            ApiResponse(responseCode = "403", description = "Incorrect authentication data"),
         ]
     )
     @PostMapping("/login")
@@ -42,7 +42,7 @@ class AuthenticationController(
 
     @Operation(
         summary = "Refresh access token",
-        description = "Authenticate user by email and password",
+        description = "Refresh authentication cookies",
         security = [SecurityRequirement(name = "cookieRefresh")]
     )
     @PostMapping("/refresh")
