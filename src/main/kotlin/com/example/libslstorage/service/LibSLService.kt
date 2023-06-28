@@ -14,12 +14,11 @@ class LibSLService {
         basePath: Path,
         lslPath: Path,
         errorListener: LslErrorListener
-    ): Pair<LibSL?, Library?> {
-        var libsl: LibSL? = null
+    ): Pair<LibSL, Library?> {
+        val libsl = LibSL(basePath.pathString)
+        libsl.errorListener = errorListener
         var library: Library? = null
         try {
-            libsl = LibSL(basePath.pathString)
-            libsl.errorListener = errorListener
             library = libsl.loadByPath(lslPath)
             return libsl to library
         } catch (e: Throwable) {

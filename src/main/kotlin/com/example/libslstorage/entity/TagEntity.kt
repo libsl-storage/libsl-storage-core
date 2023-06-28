@@ -17,10 +17,6 @@ class TagEntity(
     val name: String,
 
     @ManyToOne
-    @JoinColumn(name = "group_id", nullable = false)
-    val group: TagGroupEntity,
-
-    @ManyToOne
     @JoinColumn(name = "specification_id", nullable = false)
     val specification: SpecificationEntity,
 

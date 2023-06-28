@@ -27,7 +27,7 @@ class SpecificationPageController(
     @GetMapping("/filters")
     fun getAvailableFilters(): FilterResponse {
         val filters = specificationFilterService.getAvailableFilters()
-            .map { FilterDto(it.key, it.value) }
+            .map { FilterDto(it.key, it.title) }
         return FilterResponse(filters)
     }
 

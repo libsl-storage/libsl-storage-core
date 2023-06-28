@@ -35,8 +35,23 @@ class SpecificationEntity(
     @JoinColumn(name = "owner_id", nullable = false)
     var owner: AccountEntity,
 
-    @Column(nullable = false)
+    @Column
     var content: String? = null,
+
+    @Column(name = "libsl_version")
+    var libslVersion: String? = null,
+
+    @Column(name = "library_name")
+    var libraryName: String? = null,
+
+    @Column(name = "library_version")
+    var libraryVersion: String? = null,
+
+    @Column(name = "library_language")
+    var libraryLanguage: String? = null,
+
+    @Column(name = "library_url")
+    var libraryUrl: String? = null,
 
     @OneToMany(mappedBy = "specification")
     var errors: MutableSet<SpecificationErrorEntity> = mutableSetOf(),

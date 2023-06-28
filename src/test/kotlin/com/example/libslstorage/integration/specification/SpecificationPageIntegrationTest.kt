@@ -4,8 +4,7 @@ import com.example.libslstorage.dto.specification.SpecificationFilterRequest
 import com.example.libslstorage.dto.specification.SpecificationPageRequest
 import com.example.libslstorage.entity.SpecificationEntity
 import com.example.libslstorage.entity.TagEntity
-import com.example.libslstorage.entity.TagGroupEntity
-import com.example.libslstorage.enums.TagGroup
+import com.example.libslstorage.enums.SpecificationFilter
 import com.example.libslstorage.integration.AbstractIntegrationTest
 import com.example.libslstorage.repository.SpecificationRepository
 import com.example.libslstorage.repository.TagRepository
@@ -16,9 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired
 class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
 
     @Autowired
-    private lateinit var tagGroupHolder: Map<TagGroup, TagGroupEntity>
-
-    @Autowired
     private lateinit var specificationRepository: SpecificationRepository
 
     @Autowired
@@ -26,29 +22,17 @@ class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
 
     @Test
     fun `Check allowed filters`() {
-        webTestClient.get()
+        val bodyContentSpec = webTestClient.get()
             .uri("/specification/page/filters")
             .cookie(ACCESS_TOKEN_COOKIE_NAME, tokenService.createAccessToken(testUserAccount))
             .exchange()
             .expectStatus()
             .isOk
             .expectBody()
-            .jsonPath("$.keys[?(@.key=='${TagGroup.LIBRARY.key}'&&@.title=='${TagGroup.LIBRARY.title}')]")
-            .exists()
-            .jsonPath("$.keys[?(@.key=='${TagGroup.LANGUAGE.key}'&&@.title=='${TagGroup.LANGUAGE.title}')]")
-            .exists()
-            .jsonPath("$.keys[?(@.key=='${TagGroup.VERSION.key}'&&@.title=='${TagGroup.VERSION.title}')]")
-            .exists()
-            .jsonPath("$.keys[?(@.key=='${TagGroup.URL.key}'&&@.title=='${TagGroup.URL.title}')]")
-            .exists()
-            .jsonPath("$.keys[?(@.key=='${TagGroup.OTHER.key}'&&@.title=='${TagGroup.OTHER.title}')]")
-            .exists()
-            .jsonPath("$.keys[?(@.key=='path'&&@.title=='Path')]")
-            .exists()
-            .jsonPath("$.keys[?(@.key=='owner'&&@.title=='Owner')]")
-            .exists()
-            .jsonPath("$.keys[?(@.key=='name'&&@.title=='Specification name')]")
-            .exists()
+        SpecificationFilter.values().forEach { filter ->
+            bodyContentSpec.jsonPath("$.keys[?(@.key=='${filter.key}'&&@.title=='${filter.title}')]")
+                .exists()
+        }
     }
 
     @Test
@@ -85,12 +69,10 @@ class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
             listOf(
                 TagEntity(
                     name = "lib1",
-                    group = tagGroupHolder.getValue(TagGroup.LIBRARY),
                     specification = spec1
                 ),
                 TagEntity(
                     name = "lib2",
-                    group = tagGroupHolder.getValue(TagGroup.LIBRARY),
                     specification = spec1
                 )
             )
@@ -99,17 +81,14 @@ class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
             listOf(
                 TagEntity(
                     name = "lib2",
-                    group = tagGroupHolder.getValue(TagGroup.LIBRARY),
                     specification = spec2
                 ),
                 TagEntity(
                     name = "lib0",
-                    group = tagGroupHolder.getValue(TagGroup.LIBRARY),
                     specification = spec2
                 ),
                 TagEntity(
                     name = "lib1",
-                    group = tagGroupHolder.getValue(TagGroup.LIBRARY),
                     specification = spec2
                 )
             )
@@ -118,12 +97,10 @@ class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
             listOf(
                 TagEntity(
                     name = "lib1",
-                    group = tagGroupHolder.getValue(TagGroup.OTHER),
                     specification = spec3
                 ),
                 TagEntity(
-                    name = "lib2",
-                    group = tagGroupHolder.getValue(TagGroup.OTHER),
+                    name = "lib3",
                     specification = spec3
                 )
             )
@@ -131,7 +108,7 @@ class SpecificationPageIntegrationTest : AbstractIntegrationTest() {
 
         val request = SpecificationPageRequest(
             0,
-            listOf(SpecificationFilterRequest(TagGroup.LIBRARY.key, "lib1, lib2"))
+            listOf(SpecificationFilterRequest(SpecificationFilter.TAGS.key, "lib1, lib2"))
         )
         webTestClient.post()
             .uri("/specification/page")

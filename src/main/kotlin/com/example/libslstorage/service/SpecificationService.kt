@@ -13,6 +13,7 @@ import com.example.libslstorage.util.LslErrorListener
 import jakarta.annotation.PostConstruct
 import java.nio.file.Files
 import java.nio.file.Path
+import org.jetbrains.research.libsl.nodes.MetaNode
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.AccessDeniedException
@@ -37,22 +38,37 @@ class SpecificationService(
     private val directoryService: DirectoryService,
     private val specificationRepository: SpecificationRepository,
     private val specificationErrorService: SpecificationErrorService,
-    private val automatonService: AutomatonService,
-    private val tagService: TagService
+    private val automatonService: AutomatonService
 ) {
 
     @Value("\${libsl.tempDir}")
     private lateinit var libslTempDir: String
 
+    private fun setMetaInfo(meta: MetaNode, specification: SpecificationEntity) {
+        specification.libslVersion = meta.lslVersion.dumpToString()
+        specification.libraryName = meta.name
+        meta.libraryVersion?.let { specification.libraryVersion = it }
+        meta.language?.let { specification.libraryLanguage = it }
+        meta.url?.let { specification.libraryUrl = it }
+    }
+
+    private fun deleteMetaInfo(specification: SpecificationEntity) {
+        specification.libslVersion = null
+        specification.libraryName = null
+        specification.libraryVersion = null
+        specification.libraryLanguage = null
+        specification.libraryUrl = null
+    }
+
     private fun processFile(lslFile: Path, tempDir: Path, specification: SpecificationEntity) {
         val errorListener = LslErrorListener(specification)
         val (libsl, library) = libslService.processFile(tempDir, lslFile, errorListener)
-        val errors = libsl?.errorManager?.errors ?: emptyList()
+        library?.metadata?.let { setMetaInfo(it, specification) }
+        val errors = libsl.errorManager.errors
         if (errors.isNotEmpty() || errorListener.errors.isNotEmpty()) {
             specificationErrorService.createByLslErrors(errors, specification)
             specificationErrorService.create(errorListener.errors, specification)
-        } else {
-            tagService.createMetaTags(library!!.metadata, specification)
+        } else if (library != null) {
             automatonService.create(library.automataReferences, specification)
         }
     }
@@ -130,6 +146,7 @@ class SpecificationService(
             val lslFilePath = tempDir.resolve("${specification.name}.lsl")
             file.transferTo(lslFilePath)
 
+            deleteMetaInfo(specification)
             automatonService.delete(specification.automatons)
             specificationErrorService.delete(specification.errors)
 
