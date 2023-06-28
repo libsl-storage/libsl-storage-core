@@ -85,8 +85,10 @@ class AutomatonService(
 
     fun delete(automatons: Set<AutomatonEntity>) {
         automatons.forEach {
-            automatonStateService.delete(it.states)
             automatonFunctionService.delete(it.functions)
+        }
+        automatons.forEach {
+            automatonStateService.delete(it.states)
         }
         automatonRepository.deleteAll(automatons)
     }
