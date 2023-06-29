@@ -58,7 +58,6 @@ dependencies {
     // DB
     implementation("org.flywaydb:flyway-core")
     implementation("org.postgresql:postgresql")
-    implementation("com.h2database:h2")
     implementation("com.zaxxer:HikariCP")
 
     // Kotlin
