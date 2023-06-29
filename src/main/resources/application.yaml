@@ -22,6 +22,7 @@ spring:
         activate:
             on-profile: dev
     datasource:
+        driver-class-name: org.postgresql.Driver
         url: jdbc:postgresql://localhost:5432/lsldb
         username: ${DB_USERNAME}
         password: ${DB_PASSWORD}
@@ -44,6 +45,7 @@ spring:
         activate:
             on-profile: prod
     datasource:
+        driver-class-name: org.postgresql.Driver
         url: ${DB_URL}
         username: ${DB_USERNAME}
         password: ${DB_PASSWORD}
