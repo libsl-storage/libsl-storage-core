@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.JoinTable
+import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
@@ -24,8 +26,13 @@ class AutomatonFunctionEntity(
     @OnDelete(action = OnDeleteAction.CASCADE)
     var automaton: AutomatonEntity,
 
-    @OneToMany(mappedBy = "function")
-    var automatonCalls: MutableSet<AutomatonCallEntity> = mutableSetOf(),
+    @ManyToMany
+    @JoinTable(
+        name = "automaton_call",
+        joinColumns = [ JoinColumn(name = "function_id") ],
+        inverseJoinColumns = [ JoinColumn(name = "init_state_id") ]
+    )
+    var automatonCalls: MutableSet<AutomatonStateEntity> = mutableSetOf(),
 
     @OneToMany(mappedBy = "function")
     var arguments: MutableSet<AutomatonFunctionArgumentEntity> = mutableSetOf(),

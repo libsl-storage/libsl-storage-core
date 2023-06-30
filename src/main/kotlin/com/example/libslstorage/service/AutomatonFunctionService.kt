@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class AutomatonFunctionService(
     private val automatonFunctionRepository: AutomatonFunctionRepository,
-    private val automatonCallService: AutomatonCallService,
     private val automatonFunctionArgumentService: AutomatonFunctionArgumentService,
     private val findCallsStatementVisitor: FindCallsStatementVisitor,
 ) {
@@ -38,13 +37,13 @@ class AutomatonFunctionService(
         lslFunction.statements
             .flatMap { findCallsStatementVisitor.visit(it) }
             .forEach {
-                val (targetAutomaton, targetAutomatonEntity) = resolveAutomatonRef(it.automatonRef)
+                val (targetAutomaton, _) = resolveAutomatonRef(it.automatonRef)
                     ?: (null to null)
                 if (targetAutomaton != null) {
                     val (_, initStateEntity) = resolveAutomatonStateRef(it.stateRef, targetAutomaton)
                         ?: (null to null)
                     if (initStateEntity != null)
-                        automatonCallService.create(function, targetAutomatonEntity!!, initStateEntity)
+                        function.automatonCalls.add(initStateEntity)
                 }
             }
 
@@ -53,9 +52,10 @@ class AutomatonFunctionService(
 
     fun delete(functions: Set<AutomatonFunctionEntity>) {
         functions.forEach {
-            automatonCallService.delete(it.automatonCalls)
-            automatonFunctionArgumentService.delete(it.arguments)
+            it.automatonCalls = mutableSetOf()
         }
+        automatonFunctionRepository.saveAll(functions)
+        automatonFunctionArgumentService.delete(functions.flatMap { it.arguments }.toSet())
         automatonFunctionRepository.deleteAll(functions)
     }
 }
