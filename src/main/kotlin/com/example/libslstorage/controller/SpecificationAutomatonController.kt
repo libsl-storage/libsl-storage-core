@@ -84,9 +84,10 @@ class SpecificationAutomatonController(
         val graphs = automatons.map { automaton ->
             val nodes = mutableListOf<NodeDTO>()
             val edges = mutableListOf<EdgeDTO>()
+            val automatonNodeId = "automaton-${automaton.id!!}"
             generalNodes.add(
                 NodeDTO(
-                    automaton.id!!.toString(),
+                    automatonNodeId,
                     automaton.name,
                     GraphNodeType.AUTOMATON
                 )
@@ -104,7 +105,7 @@ class SpecificationAutomatonController(
                         state.id!!.toString(),
                         state.name,
                         state.type.toGraphNodeType(),
-                        automaton.id!!.toString()
+                        automatonNodeId
                     )
                 )
                 state.shifts.forEach { shift ->
@@ -155,7 +156,7 @@ class SpecificationAutomatonController(
                                     auxNodeId,
                                     null,
                                     GraphNodeType.AUX,
-                                    automaton.id!!.toString()
+                                    automatonNodeId
                                 ))
                                 generalEdges.add(
                                     EdgeDTO(
